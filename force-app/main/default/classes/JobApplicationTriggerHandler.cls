@@ -11,18 +11,40 @@ public with sharing class JobApplicationTriggerHandler extends TriggerHandler {
         this.oldJobMap = (Map<Id, Job_Application__c>)Trigger.oldMap;
 
     }
-    // public override void beforeInsert() {
-
-    // }
+    public override void beforeInsert() {
         
-    // public override void beforeUpdate() {
-
-    // }
-
-    // public override void beforeDelete () {
-
-    // }
-
+    }  
+    //The trigger below checks for job application records without primary contacts before updates. (line 23)
+    //Then assigns the null fields a contact related to the company of the job application. (line 42) Decision was made not to use the Contact-Application Assoc. object.
+    public override void beforeUpdate() {
+        Set<Id> setJobId = new Set<Id>();
+        Map<Id,Id> jobAccountIdMap = new Map<Id,Id>();
+        for(Job_Application__c job : newJobMap.values()){   
+            if (job.Primary_Contact__c == null) {
+                setJobId.add(job.Id);
+                jobAccountIdMap.put(job.Id, job.Company__c);
+            }
+        }
+        if(!setJobId.isEmpty()) {
+        Map<Id, Contact> contactsMap = new Map<Id, Contact>();
+            for(Contact contact : [ SELECT Id, AccountId 
+                                    FROM Contact 
+                                    WHERE AccountId 
+                                    IN :jobAccountIdMap.values() 
+                                    ORDER BY AccountId 
+                                    LIMIT 1]) 
+            {
+                contactsMap.put(contact.AccountId, contact);
+            }
+        
+            for(Job_Application__c job : newJobMap.values()){
+                if(setJobId.contains(job.Id) && contactsMap.containsKey(job.Company__c)) {
+                    job.Primary_Contact__c = contactsMap.get(job.Company__c).Id; 
+                }
+            }
+        }
+    }
+    //The afterInsert trigger below assigns tasks based on the Job Application status field.
     public override void afterInsert () {
         List<Task> tasksToInsert = new List<Task>();
         for (Job_Application__c job : this.newJobMap.values()) {
@@ -81,17 +103,10 @@ public with sharing class JobApplicationTriggerHandler extends TriggerHandler {
         }
     insert tasksToInsert;
     }
-    
+    //The afterUpdate trigger below inserts tasks based on the Job Application status field.
     public override void afterUpdate() {
         List<Task> tasksToInsert = new List<Task>();
         Map<Id, Job_Application__c> statusChangedMap = new Map<Id, Job_Application__c>();
-        // for (Job_Application__c job : this.newJobMap.values()) {
-        //     for (Job_Application__c jobOld : this.oldJobMap.values()){
-        //         if(job.status__c != jobOld.status__c){
-        //             statusChangedMap.put(job.Id, job);
-        //         }
-        //     }
-        // } 
         for (Job_Application__c job : this.newJobMap.values()) {
             Job_Application__c oldJob = this.oldJobMap.get(job.Id);
             if (oldJob != null && job.status__c != oldJob.status__c) {
