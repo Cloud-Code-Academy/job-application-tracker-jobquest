@@ -6,7 +6,7 @@
     <inlineHelpText>Please record the job position or title here.</inlineHelpText>
     <label>Job Title</label>
     <length>50</length>
-    <required>false</required>
+    <required>true</required>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Text</type>

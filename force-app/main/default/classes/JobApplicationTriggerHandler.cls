@@ -12,13 +12,42 @@ public with sharing class JobApplicationTriggerHandler extends TriggerHandler {
 
     }
     public override void beforeInsert() {
-        for (Job_Application__c jobApp : this.newJobList) {
-            new JobApplicationTriggerHandlerHelper(jobApp);
+        List<Id> accountIds = new List<Id>(); 
+        for(Job_Application__c job : this.newJobList) {  
+            if (job.Primary_Contact__c == null && job.Company__c != null) {
+                accountIds.add(job.Company__c);
+            }
         }
-
-    }  
-    //The trigger below checks for job application records without primary contacts before updates. (line 23)
-    //Then assigns the null fields a contact related to the company of the job application. (line 42) Decision was made not to use the Contact-Application Assoc. object.
+        if(!accountIds.isEmpty()) {
+            Map<Id, Contact> contactsMap = new Map<Id, Contact>();
+            for(Contact contact : [ SELECT Id, AccountId 
+                                    FROM Contact 
+                                    WHERE AccountId 
+                                    IN :accountIds
+                                    ORDER BY AccountId 
+                                    LIMIT 1]) {
+                                        contactsMap.put(contact.AccountId, contact);
+                                    }
+        
+            for(Job_Application__c job : this.newJobList) {
+                if(contactsMap.containsKey(job.Company__c)) {
+                    job.Primary_Contact__c = contactsMap.get(job.Company__c).Id; 
+                }
+            }
+        }
+        
+        
+        // The code below calculates estimated take home pay when a salary is inserted
+        for (Job_Application__c newJobApp : this.newJobList) {
+            if(newJobApp.Salary__c != null) {
+                new JobApplicationTriggerHandlerHelper(newJobApp);
+            }
+        }
+        }
+    
+    //The trigger below checks for job application records without primary contacts before updates. 
+    //Then assigns the null fields a contact related to the company of the job application. 
+    //The decision was made not to use the Contact-Application Assoc. object for this as it is a look up to the same object.
     public override void beforeUpdate() {
         Set<Id> setJobId = new Set<Id>();
         Map<Id,Id> jobAccountIdMap = new Map<Id,Id>();
@@ -35,8 +64,7 @@ public with sharing class JobApplicationTriggerHandler extends TriggerHandler {
                                     WHERE AccountId 
                                     IN :jobAccountIdMap.values() 
                                     ORDER BY AccountId 
-                                    LIMIT 1]) 
-            {
+                                    LIMIT 1]) {
                 contactsMap.put(contact.AccountId, contact);
             }
         
@@ -46,7 +74,16 @@ public with sharing class JobApplicationTriggerHandler extends TriggerHandler {
                 }
             }
         }
+        // The code below calculates estimated take home pay when a salary is updated. Before update
+        for (Job_Application__c newJobApp : this.newJobMap.values()) {
+            Job_Application__c oldJobApp = this.oldJobMap.get(newJobApp.Id); 
+            if(oldJobApp.Salary__c == null || newJobApp.Salary__c != oldJobApp.Salary__c) {
+                new JobApplicationTriggerHandlerHelper(newJobApp);
+            }
+        }
     }
+        
+   
     //The afterInsert trigger below assigns tasks based on the Job Application status field.
     public override void afterInsert () {
         List<Task> tasksToInsert = new List<Task>();
@@ -55,6 +92,7 @@ public with sharing class JobApplicationTriggerHandler extends TriggerHandler {
             Id jobId = job.Id;
             Id jobOwnerId = job.OwnerId;
            
+
             switch on job.Status__c {
                 when 'Saved' {
                     Task newTask = new Task();
