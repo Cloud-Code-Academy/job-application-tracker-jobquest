@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Taxable_Income__c</fullName>
+    <description>Taxable Income = Adjusted Gross Income - Standard Deduction</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Taxable Income is the Adjusted Gross Income(AGI) minus the Standard Deduction.</inlineHelpText>
+    <label>Taxable Income</label>
+    <precision>7</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Currency</type>
+</CustomField>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AdjustedGrossIncome__c</fullName>
+    <description>Adjusted gross income (AGI) is a taxpayer’s total income minus certain “above-the-line” deductions. It is a broad measure that includes income from wages, salaries, interest, dividends, retirement income, Social Security benefits, capital gains, business, and other sources, and subtracts specific deductions.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Adjusted gross income (AGI) is a taxpayer’s total income minus certain “above-the-line” deductions. Above the line deductions include: up to $250 of educator expenses, certain business expenses, health savings account and flexible savings account contributions, moving expenses for Armed Forces members, the deductible portion of self-employment tax, tax-deferred retirement contributions, etc.</inlineHelpText>
+    <label>Adjusted Gross Income</label>
+    <precision>7</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Currency</type>
+</CustomField>

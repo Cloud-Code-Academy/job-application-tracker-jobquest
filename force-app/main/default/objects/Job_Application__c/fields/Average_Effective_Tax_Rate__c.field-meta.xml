@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Average_Effective_Tax_Rate__c</fullName>
+    <externalId>false</externalId>
+    <inlineHelpText>This is a taxpayer&apos;s average tax rate for each income bracket.</inlineHelpText>
+    <label>Average Effective Tax Rate</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>$0 to $11,000	              10%</fullName>
+                <default>false</default>
+                <label>$0 to $11,000	              10%</label>
+            </value>
+            <value>
+                <fullName>$11,000 to $44,725       11%</fullName>
+                <default>false</default>
+                <label>$11,000 to $44,725       11%</label>
+            </value>
+            <value>
+                <fullName>$44,725 to $95,375       15%</fullName>
+                <default>false</default>
+                <label>$44,725 to $95,375       15%</label>
+            </value>
+            <value>
+                <fullName>$95,375 to $182,100     19%</fullName>
+                <default>false</default>
+                <label>$95,375 to $182,100     19%</label>
+            </value>
+            <value>
+                <fullName>$182,100 to $231,250   22%</fullName>
+                <default>false</default>
+                <label>$182,100 to $231,250   22%</label>
+            </value>
+            <value>
+                <fullName>$231,250 to $578,125   28%</fullName>
+                <default>false</default>
+                <label>$231,250 to $578,125   28%</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

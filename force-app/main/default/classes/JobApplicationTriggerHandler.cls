@@ -12,7 +12,10 @@ public with sharing class JobApplicationTriggerHandler extends TriggerHandler {
 
     }
     public override void beforeInsert() {
-        
+        for (Job_Application__c jobApp : this.newJobList) {
+            new JobApplicationTriggerHandlerHelper(jobApp);
+        }
+
     }  
     //The trigger below checks for job application records without primary contacts before updates. (line 23)
     //Then assigns the null fields a contact related to the company of the job application. (line 42) Decision was made not to use the Contact-Application Assoc. object.
