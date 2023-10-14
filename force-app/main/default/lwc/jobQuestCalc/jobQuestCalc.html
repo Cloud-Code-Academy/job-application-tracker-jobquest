@@ -1,0 +1,17 @@
+<template>
+     
+    <lightning-card class="slds-text-align_center" title="JobQuest Paycheck Calculator">
+        <lightning-icon icon-name="utility:connected_apps" size="small"></lightning-icon>   
+        <div>
+            <h2>JobQuest is lightning fast!</h2>
+            <p class="slds-text-body_regular"></p>
+        </div>
+        <div>
+            <h2>Let's estimate your take-home pay.</h2>
+            <lightning-input  type="number" name="input1" label="Put salary here." ></lightning-input>
+            <lightning-button variant="brand" label="What will my monthly paycheck be?" title="Primary action" onclick={handleClick} ></lightning-button>
+
+            <p slot="footer">Card Footer</p>
+        </div>
+    </lightning-card>
+</template>
