@@ -1,5 +1,4 @@
-<template>
-     
+<!-- <template>
     <lightning-card class="slds-text-align_center" title="JobQuest Paycheck Calculator">
         <lightning-icon icon-name="utility:connected_apps" size="small"></lightning-icon>   
         <div>
@@ -14,4 +13,122 @@
             <p slot="footer">Card Footer</p>
         </div>
     </lightning-card>
+</template> -->
+<!-- <template>
+    <div class="slds-m-around_small">
+    <lightning-card title="JobQuest Paycheck Calculator" icon-name="utility:connected_apps">
+        <div class="slds-text-align_center">
+            <h2>JobQuest is lightning fast!</h2>
+            <p class="slds-text-body_regular"></p>
+        </div>
+        <lightning-input value={number1} 
+            class="slds-text-align_center"
+            label="What is your take-home pay after taxes?" 
+            name="number1"
+            onchange={onNumberOneChange}
+            placeholder="input your salary here"
+             >
+       
+        </lightning-input> <br/>
+        
+        <lightning-button variant="brand" label="Monthly Paycheck" onclick={doSum} >
+    
+        </lightning-button>
+        &nbsp;
+        <lightning-button variant="brand" label="Yearly Net Income" onclick={doMulti} >
+    
+        </lightning-button>
+       
+    </lightning-card>
+    </div>
+</template> -->
+
+<!-- <template>
+    <lightning-card title="JobQuest Paycheck Calculator" icon-name="utility:connected_apps">
+        <div class="slds-p-around_small">
+            <div class="slds-text-align_center">
+                <h2>JobQuest is lightning fast!</h2>
+                <p class="slds-text-body_regular"></p>
+            </div>
+
+            <lightning-input label="What is your take-home pay after taxes?" type="number" name="Number1" value={num1} placeholder="input salary here"
+                onchange={onInputChangeHandler} required></lightning-input><br>
+            
+            <lightning-layout horizontal-align="space">
+                <lightning-layout-item padding="around-small">
+                    <lightning-button label="Monthly Paycheck" variant="Brand" onclick={onButtonCLick}></lightning-button>
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-small">
+                    <lightning-button label="Annual Net Income" variant="Brand" onclick={onButtonCLick}></lightning-button>
+                </lightning-layout-item>
+               
+            </lightning-layout>
+            Result = {result}
+        </div>
+    </lightning-card>
+</template> -->
+
+<!-- <template>
+    <div class="custom-border">
+        <lightning-card title="JobQuest Paycheck Calculator" icon-name="utility:connected_apps">
+            <div class="title-container">
+                <div class="slds-text-align_center">
+                    <h2 class="custom-title">JobQuest is lightning fast!</h2>
+                </div>
+                
+                <! Wrapping div for input and output -->
+                <!-- <div class="input-output-container">
+                    <lightning-input label="Input your salary and press a button." type="number" name="Number1" value={num1} placeholder="Input salary here" onchange={onInputChangeHandler} required></lightning-input><br>
+                    <!Box around the result -->
+                    <!-- <div class="slds-box result-box">
+                        <strong>Your take-home pay: </strong>
+                        <div>{result}</div>
+                    </div>
+                </div>
+
+                <lightning-layout horizontal-align="space">
+                    <lightning-layout-item padding="around-small">
+                        <lightning-button label="Monthly Paycheck" variant="brand" onclick={onButtonClick}></lightning-button>
+                    </lightning-layout-item>
+                    <lightning-layout-item padding="around-small">
+                        <lightning-button label="Annual Net Income" variant="brand" onclick={onButtonClick}></lightning-button>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </div>
+        </lightning-card>
+    </div>
+</template> --> 
+<template>
+    <div class="custom-border">
+        <lightning-card title="JobQuest Paycheck Calculator" icon-name="utility:connected_apps">
+            <div class="title-container">
+                <h2 class="custom-title">JobQuest is lightning fast!</h2>
+            </div>
+            
+            <!-- Container for input and result -->
+            <div class="input-result-container">
+                <div class="input-output-container">
+                    
+                    <lightning-input label="Input your salary and press a button." type="number" class="slds-text-align_center" name="Number1" value={num1} placeholder="Input salary here" onchange={onInputChangeHandler} required></lightning-input><br>
+                </div>
+                
+                <!-- Box around the result -->
+                <div class="slds-box result-box">
+                    <div class="slds-text-align_center">
+                    <strong>What is your take-home pay after taxes?</strong>
+                    <div>{result}</div>
+                    </div>
+                </div>
+            </div>
+
+            <lightning-layout horizontal-align="space">
+                <lightning-layout-item padding="around-small">
+                    <lightning-button label="Monthly Paycheck" variant="brand" onclick={onButtonClick}></lightning-button>
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-small">
+                    <lightning-button label="Annual Net Income" variant="brand" onclick={onButtonClick}></lightning-button>
+                </lightning-layout-item>
+            </lightning-layout>
+        </lightning-card>
+    </div>
 </template>

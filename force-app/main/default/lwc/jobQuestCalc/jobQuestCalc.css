@@ -1,0 +1,52 @@
+/* .input-output-container {
+    width: 60%; /* Adjust the width as needed */
+ /* margin: 0 auto; Center the container */
+/* }
+
+.result-box {
+    width: 100%; /* Adjust the width of the result box as needed */
+    /* margin: 0;
+    background-color: #f5f5f5; /* Light shade of gray 
+} */  
+
+
+/* .custom-border {
+    border: 5px solid #0070d2;
+    border-radius: 0.25rem;
+    padding: 1rem;
+    box-shadow: 0 0 5px rgba(0, 112, 210, 0.5);
+    margin: 0;
+    background-color: #f5f5f5; /* Light shade of gray 
+} */
+
+/* .result-box {
+    margin: 0;
+    background-color: #f5f5f5; /* Light shade of gray 
+}*/
+.input-output-container {
+    width: 80%; 
+    margin: 0 auto; 
+}
+
+.result-box {
+    width: 100%; /* Adjust the width of the result box as needed */
+    margin: 0; 
+    background-color: #f0f0f0; 
+} 
+
+.custom-border {
+    border: 10px solid #0070d2;
+    border-radius: 0.25rem;
+    padding: 1rem;
+    box-shadow: 0 0 5px rgba(0, 112, 210, 0.5);
+    margin: 0;
+    background-color: #f5f5f5; /* Light shade of gray */
+}
+
+.title-container {
+    text-align: center; /* Center the text and icon */
+}
+
+.custom-title {
+    margin: 0.05rem 0; /* Adjust the margin to reduce space */
+}
