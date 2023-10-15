@@ -1,7 +1,7 @@
-
 import { LightningElement, track } from 'lwc';
 
 export default class JobQuestCalc extends LightningElement {
+   
     @track num1; 
     @track result = ''; 
 

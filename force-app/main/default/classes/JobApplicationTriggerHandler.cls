@@ -74,7 +74,7 @@ public with sharing class JobApplicationTriggerHandler extends TriggerHandler {
                 }
             }
         }
-        // The code below calculates estimated take home pay when a salary is updated. Before update
+        // The code below calculates estimated take home pay when a salary is updated. 
         for (Job_Application__c newJobApp : this.newJobMap.values()) {
             Job_Application__c oldJobApp = this.oldJobMap.get(newJobApp.Id); 
             if(oldJobApp.Salary__c == null || newJobApp.Salary__c != oldJobApp.Salary__c) {
