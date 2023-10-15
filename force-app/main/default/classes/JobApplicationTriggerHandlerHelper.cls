@@ -19,17 +19,17 @@
             Decimal taxableIncome = salary - standardDeduct;
             
             if(taxableIncome > 0 && taxableIncome <= 11000) {
-                jobApp.Estimated_Federal_Tax__c = salary * .10;
+                jobApp.Estimated_Federal_Tax__c = taxableIncome * .10;
             } else if(taxableIncome > 11000 && taxableIncome <= 44725) {
-                jobApp.Estimated_Federal_Tax__c = salary * .11;
+                jobApp.Estimated_Federal_Tax__c = taxableIncome * .11;
             } else if(taxableIncome > 44725 && taxableIncome <= 95375) {
-                jobApp.Estimated_Federal_Tax__c = salary * .15;
+                jobApp.Estimated_Federal_Tax__c = taxableIncome * .15;
             } else if(taxableIncome > 95375 && taxableIncome <= 182100) {
-                jobApp.Estimated_Federal_Tax__c = salary * .19; 
+                jobApp.Estimated_Federal_Tax__c = taxableIncome * .19; 
             } else if(taxableIncome > 182100 && taxableIncome <= 231250) {
-                jobApp.Estimated_Federal_Tax__c = salary * .22;
+                jobApp.Estimated_Federal_Tax__c = taxableIncome * .22;
             } else if(taxableIncome > 231250 && taxableIncome <= 578125) {
-                jobApp.Estimated_Federal_Tax__c = salary * .28;
+                jobApp.Estimated_Federal_Tax__c = taxableIncome * .28;
             }
             jobApp.Take_Home_Pay__c = salary - (medicareWithholding + socialSecurity);
             jobApp.Estimated_Monthly_Paycheck__c = jobApp.Take_Home_Pay__c / 12;
