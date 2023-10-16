@@ -36,7 +36,6 @@ public with sharing class JobApplicationTriggerHandler extends TriggerHandler {
             }
         }
         
-        
         // The code below calculates estimated take home pay when a salary is inserted
         for (Job_Application__c newJobApp : this.newJobList) {
             if(newJobApp.Salary__c != null) {
