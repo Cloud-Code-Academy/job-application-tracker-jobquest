@@ -69,7 +69,7 @@ public class JoobleBringMeJobs implements Schedulable {
         fetchJobs();
     }
     public static void sendEmailToAdmin(String subject, String body) { 
-        String adminEmail;
+       
         Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
         mail.setToAddresses(new String[] { adminEmail });
         mail.setSubject(subject);
