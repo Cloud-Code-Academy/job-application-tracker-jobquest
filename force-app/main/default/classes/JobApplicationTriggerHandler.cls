@@ -11,36 +11,13 @@ public with sharing class JobApplicationTriggerHandler extends TriggerHandler {
         this.oldJobMap = (Map<Id, Job_Application__c>)Trigger.oldMap;
     }
     public override void beforeInsert() {
-        List<Id> accountIds = new List<Id>(); 
-        for(Job_Application__c job : this.newJobList) {  
-            if (job.Primary_Contact__c == null && job.Company__c != null) {
-                accountIds.add(job.Company__c);
-            }
-        }
-        if(!accountIds.isEmpty()) {
-            Map<Id, Contact> contactsMap = new Map<Id, Contact>();
-            for(Contact contact : [ SELECT Id, AccountId 
-                                    FROM Contact 
-                                    WHERE AccountId 
-                                    IN :accountIds
-                                    ORDER BY AccountId 
-                                    LIMIT 1]) {
-                                        contactsMap.put(contact.AccountId, contact);
-                                    }
-        
-            for(Job_Application__c job : this.newJobList) {
-                if(contactsMap.containsKey(job.Company__c)) {
-                    job.Primary_Contact__c = contactsMap.get(job.Company__c).Id; 
-                }
-            }
-        }
         // The code below calculates estimated take home pay when a salary is inserted
         for (Job_Application__c newJobApp : this.newJobList) {
             if(newJobApp.Salary__c != null) {
                 new JobApplicationTriggerHandlerHelper(newJobApp);
             }
         }
-        }
+    }
     //The trigger below checks for job application records without primary contacts before updates. 
     //Then assigns the null fields a contact related to the company of the job application. 
     //The decision was made not to use the Contact-Application Assoc. object for this as it is a look up to the same object.
@@ -48,7 +25,7 @@ public with sharing class JobApplicationTriggerHandler extends TriggerHandler {
         Set<Id> setJobId = new Set<Id>();
         Map<Id,Id> jobAccountIdMap = new Map<Id,Id>();
         for(Job_Application__c job : newJobMap.values()){   
-            if (job.Primary_Contact__c == null) {
+            if (job.Primary_Contact__c == null && job.Company__c != null) {
                 setJobId.add(job.Id);
                 jobAccountIdMap.put(job.Id, job.Company__c);
             }
@@ -88,7 +65,6 @@ public with sharing class JobApplicationTriggerHandler extends TriggerHandler {
             Id jobId = job.Id;
             Id jobOwnerId = job.OwnerId;
            
-
             switch on job.Status__c {
                 when 'Saved' {
                     Task newTask = new Task();
@@ -131,7 +107,7 @@ public with sharing class JobApplicationTriggerHandler extends TriggerHandler {
                     JobAppTaskHelper.configureTask(tasksToInsert, jobId, jobOwnerId,'Take some time to relax and recharge', 5);
                     JobAppTaskHelper.configureTask(tasksToInsert, jobId, jobOwnerId,'Prepare for your first day of onboarding', 14);
                 }
-                when else {
+                when 'Closed' {
                     Task newTask = new Task();
                     JobAppTaskHelper.configureTask(tasksToInsert, jobId, jobOwnerId, 'Prepare template and send a follow-up email thanking the interviewer and asking for feedback', 1);
                     JobAppTaskHelper.configureTask(tasksToInsert, jobId, jobOwnerId, 'Review your notes and reflect on areas of improvement', 12);
