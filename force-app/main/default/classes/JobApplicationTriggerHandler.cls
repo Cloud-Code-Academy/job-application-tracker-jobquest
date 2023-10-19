@@ -173,7 +173,7 @@ public with sharing class JobApplicationTriggerHandler extends TriggerHandler {
                     JobAppTaskHelper.configureTask(tasksToInsert, jobId, jobOwnerId,'Take some time to relax and recharge', 5);
                     JobAppTaskHelper.configureTask(tasksToInsert, jobId, jobOwnerId,'Prepare for your first day of onboarding', 14);
                 }
-                when else {
+                when else {   //this should closed status, all null and empty statuses should default to saved.
                     Task newTask = new Task();
                     JobAppTaskHelper.configureTask(tasksToInsert, jobId, jobOwnerId, 'Prepare template and send a follow-up email thanking the interviewer and asking for feedback', 1);
                     JobAppTaskHelper.configureTask(tasksToInsert, jobId, jobOwnerId, 'Review your notes and reflect on areas of improvement', 12);
