@@ -154,7 +154,7 @@ public with sharing class JobQuestTest {
                 statusToTasks.get(status).add(task);
             }
         
-        System.assertEquals(25, tasksForJobQuest1.size(), 'Expected 25 tasks for the job applications');
+        System.assertEquals(46, tasksForJobQuest1.size(), 'Expected 28 from insert tasks for the job applications');
         System.assertEquals(3, statusToTasks1.get('Saved').size(), 'Expected 3 tasks for Saved status.'); 
         System.assertEquals(5, statusToTasks1.get('Applying').size(), 'Expected 5 tasks for Applying status');
         System.assertEquals(4, statusToTasks1.get('Applied').size(), 'Expected 4 tasks for Applied status');
