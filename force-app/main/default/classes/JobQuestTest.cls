@@ -22,7 +22,6 @@ public with sharing class JobQuestTest {
                         WHERE Id
                         IN: insertedIds];
                       
-
         Assert.areEqual(null, takeHomePayList[0].Estimated_Monthly_Paycheck__c, 'This field should be null'); //if the salary is null the estimated paycheck will be too
         System.assertEquals(4456, Math.round(takeHomePayList[1].Estimated_Monthly_Paycheck__c), 'This field should equal 4456'); //as long as it rounds right correctly we're good, if this number is right - we can assume the annual number will be correct also
         Assert.areEqual(53467.00, takeHomePayList[1].Take_Home_Pay__c, 'Take_Home_Pay__c should equal 53467.00');//and it correct
@@ -80,101 +79,61 @@ public with sharing class JobQuestTest {
         Assert.areEqual(53467.00, takeHomePayList[0].Take_Home_Pay__c, 'Take_Home_Pay__c should equal 53467.00');
         Assert.areEqual(56984.50, takeHomePayList[1].Take_Home_Pay__c, 'Take_Home_Pay__c should equal 56984.50');
     } 
-    @isTest
-    static void testJobApplicationTrigger_jobAppTaskHelper(){
-        Job_Application__c[] jobAppList = new Job_Application__c[] {
-            new Job_Application__c(Job_Title__c = 'Salesforce Dev', Status__c = 'Saved'),
-            new Job_Application__c(Job_Title__c = 'Salesforce Dev', Status__c = 'Applying'),
-            new Job_Application__c(Job_Title__c = 'Salesforce Dev', Status__c = 'Applied'),
-            new Job_Application__c(Job_Title__c = 'Salesforce Dev', Status__c = 'Interviewing'), 
-            new Job_Application__c(Job_Title__c = 'Salesforce Dev', Status__c = 'Negotiating'), 
-            new Job_Application__c(Job_Title__c = 'Salesforce Dev', Status__c = 'Accepted'), 
-            new Job_Application__c(Job_Title__c = 'Salesforce Dev', Status__c = 'Closed'), 
-            new Job_Application__c(Job_Title__c = 'Salesforce Dev')};//defaults to 'Saved' so saved tasks will be counted twice below
-
-        insert jobAppList;
     
-        Map<Id, String> jobIdToStatus = new Map<Id, String>();
+@isTest
+static void testJobApplicationTrigger_jobAppTaskHelper() {
+    // Prepare test data
+    Job_Application__c[] jobAppList = new Job_Application__c[] {
+        new Job_Application__c(Job_Title__c = 'Salesforce Dev', Status__c = 'Saved'),
+        new Job_Application__c(Job_Title__c = 'Salesforce Dev', Status__c = 'Applying'),
+        new Job_Application__c(Job_Title__c = 'Salesforce Dev', Status__c = 'Applied'),
+        new Job_Application__c(Job_Title__c = 'Salesforce Dev', Status__c = 'Interviewing'), 
+        new Job_Application__c(Job_Title__c = 'Salesforce Dev', Status__c = 'Negotiating'), 
+        new Job_Application__c(Job_Title__c = 'Salesforce Dev', Status__c = 'Accepted'), 
+        new Job_Application__c(Job_Title__c = 'Salesforce Dev', Status__c = 'Closed'),
+        new Job_Application__c(Job_Title__c = 'Salesforce Dev')  // Defaults to 'Saved'
+    };
 
-        for (Job_Application__c insertedJob : [SELECT Id, Status__c FROM Job_Application__c WHERE Id IN :jobAppList]) {
-            jobIdToStatus.put(insertedJob.Id, insertedJob.Status__c);
+    insert jobAppList;
+
+    // Retrieve the statuses of the inserted jobs
+    Map<Id, String> jobIdToStatus = new Map<Id, String>();
+    for (Job_Application__c insertedJob : [SELECT Id, Status__c FROM Job_Application__c WHERE Id IN :jobAppList]) {
+        jobIdToStatus.put(insertedJob.Id, insertedJob.Status__c);
+    }
+
+    // Group tasks by status
+    List<Task> tasksForJobQuest = [SELECT Id, WhatId, Subject FROM Task WHERE WhatId IN :jobIdToStatus.keySet()];
+    Map<String, List<Task>> statusToTasks = new Map<String, List<Task>>();
+    for (Task task : tasksForJobQuest) {
+        String status = jobIdToStatus.get(task.WhatId);
+        if (!statusToTasks.containsKey(status)) {
+            statusToTasks.put(status, new List<Task>());
         }
-        List<Task> tasksForJobQuest = [SELECT Id, WhatId, Subject FROM Task WHERE WhatId IN :jobIdToStatus.keySet()];
-        Map<String, List<Task>> statusToTasks = new Map<String, List<Task>>();
-        for (Task task : tasksForJobQuest) {
-            String status = jobIdToStatus.get(task.WhatId);
-                if (!statusToTasks.containsKey(status)) {
-                    statusToTasks.put(status, new List<Task>());
-                }
-                statusToTasks.get(status).add(task);
-            }
-        List<Task> savedTasks = statusToTasks.get('Saved');
-        Boolean foundExpectedTask = false;
-        for (Task task : savedTasks) {
-            if (task.Subject == 'Check if the job description aligns with your interests and values') {
-                foundExpectedTask = true;
-                break;
-            }
+        statusToTasks.get(status).add(task);
+    }
+
+    // Check for specific task for 'Saved' status
+    Boolean foundExpectedTask = false;
+    for (Task task : statusToTasks.get('Saved')) {
+        if (task.Subject == 'Check if the job description aligns with your interests and values') {
+            foundExpectedTask = true;
+            break;
         }
-        System.assert(foundExpectedTask, 'Expected task subject not found for "Saved" status.');
-        
-        System.assertEquals(28, tasksForJobQuest.size(), 'Expected 28 tasks for the job applications');
-        System.assertEquals(6, statusToTasks.get('Saved').size(), 'Expected 6 tasks (3 tasks twice) for Saved status.'); //counted the first "Saved" and the default "Saved" at the end.
-        Assert.areEqual(5, statusToTasks.get('Applying').size(), 'Expected 5 tasks for Applying status');
-        Assert.areEqual(4, statusToTasks.get('Applied').size(), 'Expected 4 tasks for Applied status');
-        Assert.areEqual(5, statusToTasks.get('Interviewing').size(), 'Expected 5 tasks for Interviewing status');
-        Assert.areEqual(3, statusToTasks.get('Negotiating').size(), 'Expected 3 tasks for Negotiating status');
-        Assert.areEqual(3, statusToTasks.get('Accepted').size(), 'Expected 3 tasks for Accepted status');
-        Assert.areEqual(2, statusToTasks.get('Closed').size(), 'Expected 2 tasks for Closed status');
-   
-    //and now to update the same group
-   
-        jobAppList[0].Status__c = 'Applied';
-        jobAppList[1].Status__c = 'Applying';
-        jobAppList[2].Status__c = 'Interviewing';
-        jobAppList[3].Status__c = 'Negotiating';
-        jobAppList[4].Status__c = 'Accepted';
-        jobAppList[5].Status__c = 'Saved';
-        jobAppList[6].Status__c = 'Closed';
-        jobAppList[7].Status__c = 'Saved';
-        update jobAppList;
-        
-        Map<Id, String> jobIdToStatus1 = new Map<Id, String>();
-        for (Job_Application__c updatedJob : [SELECT Id, Status__c FROM Job_Application__c WHERE Id IN :jobAppList]) {
-            jobIdToStatus1.put(updatedJob.Id, updatedJob.Status__c);
-        }
-        
-        List<Task> tasksForJobQuest1 = [SELECT Id, WhatId, Subject FROM Task WHERE WhatId IN :jobIdToStatus.keySet()];
-        Map<String, List<Task>> statusToTasks1 = new Map<String, List<Task>>();
-            for (Task task : tasksForJobQuest1) {
-                String status = jobIdToStatus1.get(task.WhatId);
-                if (!statusToTasks1.containsKey(status)) {
-                    statusToTasks1.put(status, new List<Task>());
-                }
-                statusToTasks.get(status).add(task);
-            }
-        
-        System.assertEquals(46, tasksForJobQuest1.size(), 'Expected 28 from insert tasks for the job applications');
-        System.assertEquals(3, statusToTasks1.get('Saved').size(), 'Expected 3 tasks for Saved status.'); 
-        System.assertEquals(5, statusToTasks1.get('Applying').size(), 'Expected 5 tasks for Applying status');
-        System.assertEquals(4, statusToTasks1.get('Applied').size(), 'Expected 4 tasks for Applied status');
-        System.assertEquals(5, statusToTasks1.get('Interviewing').size(), 'Expected 5 tasks for Interviewing status');
-        System.assertEquals(3, statusToTasks1.get('Negotiating').size(), 'Expected 3 tasks for Negotiating status');
-        System.assertEquals(3, statusToTasks1.get('Accepted').size(), 'Expected 3 tasks for Accepted status');
-        System.assertEquals(2, statusToTasks1.get('Closed').size(), 'Expected 2 tasks for Closed status');
-            
-        List<Task> closedTasks1 = statusToTasks.get('Closed');
-        Boolean foundExpectedTask1 = false;
-            for (Task task : closedTasks1) {
-                if (task.Subject == 'Review your notes and reflect on areas of improvement') {
-                    foundExpectedTask1 = true;
-                    break;
-                }
-            }
-        System.assert(foundExpectedTask1, 'Expected task subject not found for "Closed" status.');
-       
-        }
-      
+    }
+    System.assert(foundExpectedTask, 'Expected task subject not found for "Saved" status.');
+
+    
+    Assert.areEqual(28, tasksForJobQuest.size(), 'Expected 28 tasks for the job applications');
+    Assert.areEqual(6, statusToTasks.get('Saved').size(), 'Expected 6 tasks (3 tasks twice) for Saved status.');
+    Assert.areEqual(5, statusToTasks.get('Applying').size(), 'Expected 5 tasks for Applying status');
+    Assert.areEqual(4, statusToTasks.get('Applied').size(), 'Expected 4 tasks for Applied status');
+    Assert.areEqual(5, statusToTasks.get('Interviewing').size(), 'Expected 5 tasks for Interviewing status');
+    Assert.areEqual(3, statusToTasks.get('Negotiating').size(), 'Expected 3 tasks for Negotiating status');
+    Assert.areEqual(3, statusToTasks.get('Accepted').size(), 'Expected 3 tasks for Accepted status');
+    Assert.areEqual(2, statusToTasks.get('Closed').size(), 'Expected 2 tasks for Closed status');
+}
+
    
     @isTest
     static void testJobApplicationTrigger_jobAppTaskHelperAfterUpdate() {
@@ -220,17 +179,18 @@ public with sharing class JobQuestTest {
             new Job_Application__c(Job_Title__c = 'Salesforce Dev') 
             };
             insert jobAppList;
-        Test.startTest();
-            jobAppList[0].Status__c = 'Applied';
-            jobAppList[1].Status__c = 'Applying';
+        
+            jobAppList[0].Status__c = 'Applying';
+            jobAppList[1].Status__c = 'Applied';
             jobAppList[2].Status__c = 'Interviewing';
             jobAppList[3].Status__c = 'Negotiating';
             jobAppList[4].Status__c = 'Accepted';
-            jobAppList[5].Status__c = 'Saved';
+            jobAppList[5].Status__c = 'Accepted'; //stayed same
             jobAppList[6].Status__c = 'Closed';
             jobAppList[7].Status__c = 'Saved';
             update jobAppList;
         
+        Test.startTest();
             Map<Id, String> jobIdToStatus = new Map<Id, String>();
             for (Job_Application__c updatedJob : [SELECT Id, Status__c FROM Job_Application__c WHERE Id IN :jobAppList]) {
                 jobIdToStatus.put(updatedJob.Id, updatedJob.Status__c);
@@ -246,15 +206,15 @@ public with sharing class JobQuestTest {
                 statusToTasks.get(status).add(task);
             }
         
-            System.assertEquals(25, tasksForJobQuest.size(), 'Expected 25 tasks for the job applications');
-            System.assertEquals(3, statusToTasks.get('Saved').size(), 'Expected 3 tasks for Saved status.'); 
-            System.assertEquals(5, statusToTasks.get('Applying').size(), 'Expected 5 tasks for Applying status');
-            System.assertEquals(4, statusToTasks.get('Applied').size(), 'Expected 4 tasks for Applied status');
-            System.assertEquals(5, statusToTasks.get('Interviewing').size(), 'Expected 5 tasks for Interviewing status');
-            System.assertEquals(3, statusToTasks.get('Negotiating').size(), 'Expected 3 tasks for Negotiating status');
-            System.assertEquals(3, statusToTasks.get('Accepted').size(), 'Expected 3 tasks for Accepted status');
-            System.assertEquals(2, statusToTasks.get('Closed').size(), 'Expected 2 tasks for Closed status');
+            Assert.areEqual(48, tasksForJobQuest.size(), 'Expected 48 tasks for the job applications');
             
+            System.assertEquals(8, statusToTasks.get('Applying').size(), 'Expected 8 tasks for Applying status');//[0] has 3 tasks from saved insert + 5 applying after updat
+            System.assertEquals(9, statusToTasks.get('Applied').size(), 'Expected 9 tasks for Applied status'); //[1] has 5 applying after insert + 4 applied update
+            System.assertEquals(9, statusToTasks.get('Interviewing').size(), 'Expected 9 tasks for Interviewing status');//[2] 4 applied insert + 5 Interviewing
+            System.assertEquals(8, statusToTasks.get('Negotiating').size(), 'Expected 8 tasks for Negotiating status'); //[3] 5 tasks after insert + 3 after update
+            System.assertEquals(9, statusToTasks.get('Accepted').size(), 'Expected 9 tasks for Accepted status'); // [5] didn't update so 3 and [4] had 3 + 3 after update 
+            System.assertEquals(2, statusToTasks.get('Closed').size(), 'Expected 2 tasks for Closed status'); //[6] 2 tasks for closed status
+            System.assertEquals(3, statusToTasks.get('Saved').size(), 'Expected 3 tasks for Saved status.'); //[7]just has saved status which is 3 tasks
             List<Task> closedTasks = statusToTasks.get('Closed');
             Boolean foundExpectedTask = false;
             for (Task task : closedTasks) {
