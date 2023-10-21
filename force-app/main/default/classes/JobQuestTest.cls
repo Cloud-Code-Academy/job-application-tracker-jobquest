@@ -90,8 +90,8 @@ public with sharing class JobQuestTest {
             new Job_Application__c(Job_Title__c = 'Salesforce Dev', Status__c = 'Negotiating'), 
             new Job_Application__c(Job_Title__c = 'Salesforce Dev', Status__c = 'Accepted'), 
             new Job_Application__c(Job_Title__c = 'Salesforce Dev', Status__c = 'Closed'), 
-            new Job_Application__c(Job_Title__c = 'Salesforce Dev')   //defaults to 'Saved' so saved tasks will be counted twice below
-        };
+            new Job_Application__c(Job_Title__c = 'Salesforce Dev')};//defaults to 'Saved' so saved tasks will be counted twice below
+
         insert jobAppList;
     
         Map<Id, String> jobIdToStatus = new Map<Id, String>();
@@ -125,9 +125,55 @@ public with sharing class JobQuestTest {
         Assert.areEqual(5, statusToTasks.get('Interviewing').size(), 'Expected 5 tasks for Interviewing status');
         Assert.areEqual(3, statusToTasks.get('Negotiating').size(), 'Expected 3 tasks for Negotiating status');
         Assert.areEqual(3, statusToTasks.get('Accepted').size(), 'Expected 3 tasks for Accepted status');
-        Assert.areEqual(2, statusToTasks.get('Closed').size(), 'Expected 2 tasks for Closed status');  
+        Assert.areEqual(2, statusToTasks.get('Closed').size(), 'Expected 2 tasks for Closed status');
+   
+    //and now to update the same group
+   
+        jobAppList[0].Status__c = 'Applied';
+        jobAppList[1].Status__c = 'Applying';
+        jobAppList[2].Status__c = 'Interviewing';
+        jobAppList[3].Status__c = 'Negotiating';
+        jobAppList[4].Status__c = 'Accepted';
+        jobAppList[5].Status__c = 'Saved';
+        jobAppList[6].Status__c = 'Closed';
+        jobAppList[7].Status__c = 'Saved';
+        update jobAppList;
         
-    }
+        Map<Id, String> jobIdToStatus1 = new Map<Id, String>();
+        for (Job_Application__c updatedJob : [SELECT Id, Status__c FROM Job_Application__c WHERE Id IN :jobAppList]) {
+            jobIdToStatus1.put(updatedJob.Id, updatedJob.Status__c);
+        }
+        
+        List<Task> tasksForJobQuest1 = [SELECT Id, WhatId, Subject FROM Task WHERE WhatId IN :jobIdToStatus.keySet()];
+        Map<String, List<Task>> statusToTasks1 = new Map<String, List<Task>>();
+            for (Task task : tasksForJobQuest1) {
+                String status = jobIdToStatus1.get(task.WhatId);
+                if (!statusToTasks1.containsKey(status)) {
+                    statusToTasks1.put(status, new List<Task>());
+                }
+                statusToTasks.get(status).add(task);
+            }
+        
+        System.assertEquals(46, tasksForJobQuest1.size(), 'Expected 28 from insert tasks for the job applications');
+        System.assertEquals(3, statusToTasks1.get('Saved').size(), 'Expected 3 tasks for Saved status.'); 
+        System.assertEquals(5, statusToTasks1.get('Applying').size(), 'Expected 5 tasks for Applying status');
+        System.assertEquals(4, statusToTasks1.get('Applied').size(), 'Expected 4 tasks for Applied status');
+        System.assertEquals(5, statusToTasks1.get('Interviewing').size(), 'Expected 5 tasks for Interviewing status');
+        System.assertEquals(3, statusToTasks1.get('Negotiating').size(), 'Expected 3 tasks for Negotiating status');
+        System.assertEquals(3, statusToTasks1.get('Accepted').size(), 'Expected 3 tasks for Accepted status');
+        System.assertEquals(2, statusToTasks1.get('Closed').size(), 'Expected 2 tasks for Closed status');
+            
+        List<Task> closedTasks1 = statusToTasks.get('Closed');
+        Boolean foundExpectedTask1 = false;
+            for (Task task : closedTasks1) {
+                if (task.Subject == 'Review your notes and reflect on areas of improvement') {
+                    foundExpectedTask1 = true;
+                    break;
+                }
+            }
+        System.assert(foundExpectedTask1, 'Expected task subject not found for "Closed" status.');
+       
+        }
       
    
     @isTest
@@ -171,17 +217,17 @@ public with sharing class JobQuestTest {
             new Job_Application__c(Job_Title__c = 'Salesforce Dev', Status__c = 'Negotiating'), 
             new Job_Application__c(Job_Title__c = 'Salesforce Dev', Status__c = 'Accepted'), 
             new Job_Application__c(Job_Title__c = 'Salesforce Dev', Status__c = 'Closed'), 
-            new Job_Application__c(Job_Title__c = 'Salesforce Dev')
+            new Job_Application__c(Job_Title__c = 'Salesforce Dev') 
             };
             insert jobAppList;
-        
-            jobAppList[0].Status__c = 'Applying';
-            jobAppList[1].Status__c = 'Applied';
+        Test.startTest();
+            jobAppList[0].Status__c = 'Applied';
+            jobAppList[1].Status__c = 'Applying';
             jobAppList[2].Status__c = 'Interviewing';
             jobAppList[3].Status__c = 'Negotiating';
             jobAppList[4].Status__c = 'Accepted';
-            jobAppList[5].Status__c = 'Closed';
-            jobAppList[6].Status__c = 'Accepted'; //stayed same
+            jobAppList[5].Status__c = 'Saved';
+            jobAppList[6].Status__c = 'Closed';
             jobAppList[7].Status__c = 'Saved';
             update jobAppList;
         
@@ -200,15 +246,14 @@ public with sharing class JobQuestTest {
                 statusToTasks.get(status).add(task);
             }
         
-            System.assertEquals(53, tasksForJobQuest.size(), 'Expected 53 tasks for the job applications');
-           
-            System.assertEquals(8, statusToTasks.get('Applying').size(), 'Expected 8 tasks for Applying status');//[1] on insert got 3 tasks on saved, then got 5 after update to applying
-            System.assertEquals(9, statusToTasks.get('Applied').size(), 'Expected 9 tasks for Applied status');//[2] had 5 for applying insert then 4 more after update to applied
-            System.assertEquals(9, statusToTasks.get('Interviewing').size(), 'Expected 9 tasks for Interviewing status');//[3] had 4 for insert to applied then got 5 more tasks at update
-            System.assertEquals(8, statusToTasks.get('Negotiating').size(), 'Expected 8 tasks for Negotiating status'); //[4] had 5 tasks at insert to interviewing and 3 more after update to Negotiating
-            System.assertEquals(11, statusToTasks.get('Accepted').size(), 'Expected 11 tasks for Accepted status'); //[5]has 3 for insert negotiating plus 3 for accepted = 6 [6] has 3 tasks because it didn't change status 
-            System.assertEquals(5, statusToTasks.get('Closed').size(), 'Expected 7 tasks for Closed status');
+            System.assertEquals(25, tasksForJobQuest.size(), 'Expected 25 tasks for the job applications');
             System.assertEquals(3, statusToTasks.get('Saved').size(), 'Expected 3 tasks for Saved status.'); 
+            System.assertEquals(5, statusToTasks.get('Applying').size(), 'Expected 5 tasks for Applying status');
+            System.assertEquals(4, statusToTasks.get('Applied').size(), 'Expected 4 tasks for Applied status');
+            System.assertEquals(5, statusToTasks.get('Interviewing').size(), 'Expected 5 tasks for Interviewing status');
+            System.assertEquals(3, statusToTasks.get('Negotiating').size(), 'Expected 3 tasks for Negotiating status');
+            System.assertEquals(3, statusToTasks.get('Accepted').size(), 'Expected 3 tasks for Accepted status');
+            System.assertEquals(2, statusToTasks.get('Closed').size(), 'Expected 2 tasks for Closed status');
             
             List<Task> closedTasks = statusToTasks.get('Closed');
             Boolean foundExpectedTask = false;
@@ -219,7 +264,7 @@ public with sharing class JobQuestTest {
                 }
             }
             System.assert(foundExpectedTask, 'Expected task subject not found for "Closed" status.');
-       
+        Test.stopTest();
         }
        
    
@@ -260,7 +305,7 @@ public with sharing class JobQuestTest {
             System.assert(except.getMessage().contains('This interview may conflict with another event.'));
         }
     }
-    @isTest  //this one kept failing to give an exception until I separated it from the test above it 
+    @isTest  //this one kept failing to give an exception until I separated it from the test above it for some reason
     static void immediateOverlappingEventsForSameOwnerBeforeInsert(){
         User testUser = createTestUser();
         Event sameOwnerE1 = new Event(Subject = 'Job Interview', OwnerId = testUser.Id, StartDateTime = DateTime.now().addHours(5), EndDateTime = DateTime.now().addHours(6));
@@ -278,7 +323,7 @@ public with sharing class JobQuestTest {
     }
 
     @isTest  
-    static void testEventTriggerHandlerBeforeUpdate(){    //I wrote a last paragraph of code on the EventTriggerHandler to pass this one because; I added a loop comparing events being processed to other events being processed not just pre existing in the org
+    static void testEventTriggerHandlerBeforeUpdate(){    //I had to write a last paragraph of code on the EventTriggerHandler just to pass this one
         User testUser = createTestUser();  
         Event event1 = new Event(Subject = 'Job Interview', OwnerId = testUser.Id, StartDateTime = DateTime.now(), EndDateTime = DateTime.now().addHours(1));
         Event event2 = new Event(Subject = 'Job Interview', OwnerId = testUser.Id, StartDateTime = DateTime.now().addHours(2), EndDateTime = DateTime.now().addHours(3));

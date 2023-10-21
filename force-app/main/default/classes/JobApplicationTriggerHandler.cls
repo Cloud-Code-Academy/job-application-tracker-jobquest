@@ -20,6 +20,7 @@ public with sharing class JobApplicationTriggerHandler extends TriggerHandler {
             }
         }
     }
+    }
     //The trigger below checks for job application records without primary contacts before updates. 
     //Then assigns the null fields a contact related to the company of the job application. 
     //The decision was made not to use the Contact-Application Assoc. object for this as it is a look up to the same object.
@@ -27,6 +28,7 @@ public with sharing class JobApplicationTriggerHandler extends TriggerHandler {
         Set<Id> setJobId = new Set<Id>();
         Map<Id,Id> jobAccountIdMap = new Map<Id,Id>();
         for(Job_Application__c job : newJobMap.values()){   
+            if (job.Primary_Contact__c == null && job.Company__c != null) {
             if (job.Primary_Contact__c == null && job.Company__c != null) {
                 setJobId.add(job.Id);
                 jobAccountIdMap.put(job.Id, job.Company__c);
@@ -110,6 +112,7 @@ public with sharing class JobApplicationTriggerHandler extends TriggerHandler {
                     JobAppTaskHelper.configureTask(tasksToInsert, jobId, jobOwnerId,'Prepare for your first day of onboarding', 14);
                 }
                 when 'Closed' {
+                when 'Closed' {
                     Task newTask = new Task();
                     JobAppTaskHelper.configureTask(tasksToInsert, jobId, jobOwnerId, 'Prepare template and send a follow-up email thanking the interviewer and asking for feedback', 1);
                     JobAppTaskHelper.configureTask(tasksToInsert, jobId, jobOwnerId, 'Review your notes and reflect on areas of improvement', 12);
@@ -188,8 +191,7 @@ public with sharing class JobApplicationTriggerHandler extends TriggerHandler {
                     JobAppTaskHelper.configureTask(tasksToInsert, jobId, jobOwnerId,'Take some time to relax and recharge', 5);
                     JobAppTaskHelper.configureTask(tasksToInsert, jobId, jobOwnerId,'Prepare for your first day of onboarding', 14);
                 }
-            
-                when 'Closed' {
+                when else {   //this should closed status, all null and empty statuses should default to saved.
                     Task newTask = new Task();
                     JobAppTaskHelper.configureTask(tasksToInsert, jobId, jobOwnerId, 'Prepare template and send a follow-up email thanking the interviewer and asking for feedback', 1);
                     JobAppTaskHelper.configureTask(tasksToInsert, jobId, jobOwnerId, 'Review your notes and reflect on areas of improvement', 12);
