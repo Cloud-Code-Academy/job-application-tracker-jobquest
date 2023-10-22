@@ -1,4 +1,4 @@
-public class JoobleBringMeJobs implements Schedulable { //this class takes Jooble callout and sticks it into fields for Salesforce custom object 'Job Application', you can schedule it
+public class JoobleBringMeJobs implements Schedulable { //JoobleBringMeJobs takes Jooble callout and sticks it into fields for Salesforce custom object 'Job Application', you can schedule it
     static String adminEmail; 
     static { //this static method or static initialization block runs only one time, regardless of how many times you access the class. https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_classes_static.htm
         User adminUser = [SELECT Email FROM User WHERE Profile.Name = 'System Administrator' LIMIT 1];
