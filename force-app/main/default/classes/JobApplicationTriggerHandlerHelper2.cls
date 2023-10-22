@@ -1,15 +1,12 @@
 public with sharing class JobApplicationTriggerHandlerHelper2 {
-
     private Boolean isSingle;
-
-    public JobApplicationTriggerHandlerHelper2(Job_Application__c jobApp, Boolean isSingleFiler) {
-        isSingle = isSingleFiler;
+    public JobApplicationTriggerHandlerHelper2(Job_Application__c jobApp, Boolean isSingleFiler) { 
+        isSingle = isSingleFiler;  
 
         if (jobApp == null || jobApp.Salary__c == null) {
             jobApp.Estimated_Federal_Tax__c = null;
             return;
         }
-
         Decimal salary = jobApp.Salary__c;
         Decimal standardDeduct = isSingle ? 13850 : 27600;
         jobApp.Standard_Deduction__c = standardDeduct;
@@ -26,7 +23,6 @@ public with sharing class JobApplicationTriggerHandlerHelper2 {
         jobApp.Estimated_Monthly_Paycheck__c = (jobApp.Take_Home_Pay__c / 12).setScale(2, System.RoundingMode.HALF_UP);
         jobApp.Estimated_Weekly_Paycheck__c = (jobApp.Take_Home_Pay__c / 52).setScale(2, System.RoundingMode.HALF_UP);
     }
-
     private Decimal calculateTax(Decimal taxableIncome) {
         if (isSingle) {
             if (taxableIncome <= 11000) return taxableIncome * 0.10;
@@ -46,7 +42,6 @@ public with sharing class JobApplicationTriggerHandlerHelper2 {
             return 186601.50 + (taxableIncome - 693750) * 0.37;
         }
     }
-
     @AuraEnabled(cacheable=true)
     public static Decimal calculateTakeHomePay(Decimal salary, String filingStatus, String period) {
         Job_Application__c jobApp = new Job_Application__c();
@@ -54,7 +49,7 @@ public with sharing class JobApplicationTriggerHandlerHelper2 {
 
         Boolean isSingleFiler = (filingStatus == 'single') ? true : false;
 
-        new JobApplicationTriggerHandlerHelper2(jobApp, isSingleFiler);
+        new JobApplicationTriggerHandlerHelper2(jobApp, isSingleFiler); 
 
         if(period == 'monthly') {
             return jobApp.Estimated_Monthly_Paycheck__c;

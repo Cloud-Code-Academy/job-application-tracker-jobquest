@@ -16,9 +16,11 @@ public class JobApplicationTriggerHandler extends TriggerHandler {
         // The code below calculates estimated take home pay when a salary is inserted
         for (Job_Application__c newJobApp : this.newJobList) {
             if(newJobApp.Salary__c != null) {
-                new JobApplicationTriggerHandlerHelper(newJobApp);
+                Boolean isSingle = (newJobApp.Single_or_Married_filing_Jointly__c == 'Filing Single');
+                new JobApplicationTriggerHandlerHelper2(newJobApp, isSingle);
             }
         }
+        
     }
     //The trigger below checks for job application records without primary contacts before updates. 
     //Then assigns the null fields a contact related to the company of the job application. 
@@ -52,11 +54,13 @@ public class JobApplicationTriggerHandler extends TriggerHandler {
         }
         // The code below calculates estimated take home pay when a salary is updated. 
         for (Job_Application__c newJobApp : this.newJobMap.values()) {
-            Job_Application__c oldJobApp = this.oldJobMap.get(newJobApp.Id); 
-            if(oldJobApp.Salary__c == null || newJobApp.Salary__c != oldJobApp.Salary__c) {
-                new JobApplicationTriggerHandlerHelper(newJobApp);
-            }
+        Job_Application__c oldJobApp = this.oldJobMap.get(newJobApp.Id); 
+        if(oldJobApp.Salary__c == null || newJobApp.Salary__c != oldJobApp.Salary__c) {
+            Boolean isSingle = (newJobApp.Single_or_Married_filing_Jointly__c == 'Filing Single');
+            new JobApplicationTriggerHandlerHelper2(newJobApp, isSingle);
         }
+    }
+    
     }
 public override void afterInsert() {
     if (isTriggerRunning) return;
