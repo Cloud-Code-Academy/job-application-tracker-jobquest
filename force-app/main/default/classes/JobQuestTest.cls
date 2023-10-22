@@ -1,31 +1,50 @@
 @isTest
 public with sharing class JobQuestTest {
-    @isTest
-    static void testJobApplicationTrigger_takeHomePayBeforeInsert(){
-        Job_Application__c[] jobAppList = new Job_Application__c[]{};
-        Job_Application__c jobNull = new Job_Application__c(
-            Job_Title__c = 'Salesforce Dev'
-        ); 
-        jobAppList.add(jobNull);
-        Job_Application__c jobSalary = new Job_Application__c(
-            Job_Title__c = 'Jr. Salesforce Dev',
-            Salary__c = 65000
-        ); 
-        jobAppList.add(jobSalary);
-        insert jobAppList;
-        List<Id> insertedIds = new List<Id>();
-            for(Job_Application__c jobApp : jobAppList) {
-                insertedIds.add(jobApp.Id);
-            }  
-        List<Job_Application__c> takeHomePayList = [SELECT Id, Take_Home_Pay__c, Estimated_Monthly_Paycheck__c 
-                        FROM Job_Application__c
-                        WHERE Id
-                        IN: insertedIds];
-                      
-        Assert.areEqual(null, takeHomePayList[0].Estimated_Monthly_Paycheck__c, 'This field should be null'); //if the salary is null the estimated paycheck will be too
-        System.assertEquals(4456, Math.round(takeHomePayList[1].Estimated_Monthly_Paycheck__c), 'This field should equal 4456'); //as long as it rounds right correctly we're good, if this number is right - we can assume the annual number will be correct also
-        Assert.areEqual(53467.00, takeHomePayList[1].Take_Home_Pay__c, 'Take_Home_Pay__c should equal 53467.00');//and it correct
-    }
+
+@isTest
+static void testJobApplicationTrigger_takeHomePayBeforeInsert(){
+    Job_Application__c[] jobAppList = new Job_Application__c[]{};
+    
+    Job_Application__c jobNull = new Job_Application__c(
+        Job_Title__c = 'Salesforce Dev'
+    );
+    jobAppList.add(jobNull);
+    
+    Job_Application__c jobSalarySingle = new Job_Application__c(
+        Job_Title__c = 'Jr. Salesforce Dev - Single',
+        Salary__c = 65000,
+        Single_or_Married_filing_Jointly__c = 'Filing Single'
+    );
+    jobAppList.add(jobSalarySingle);
+    
+    Job_Application__c jobSalaryMarried = new Job_Application__c(
+        Job_Title__c = 'Jr. Salesforce Dev - Married',
+        Salary__c = 65000,
+        Single_or_Married_filing_Jointly__c = 'Filing Married (jointly)'
+    );
+    jobAppList.add(jobSalaryMarried);
+    
+    // Insert records
+    insert jobAppList;
+    
+    // Query records
+    Map<Id, Job_Application__c> insertedJobApps = new Map<Id, Job_Application__c>(
+        [SELECT Id, Take_Home_Pay__c, Estimated_Monthly_Paycheck__c, Estimated_Weekly_Paycheck__c, Single_or_Married_filing_Jointly__c 
+         FROM Job_Application__c
+         WHERE Id IN: jobAppList]
+    );
+    
+    // Assertions
+    Assert.areEqual(null, insertedJobApps.get(jobNull.Id).Estimated_Monthly_Paycheck__c, 'This field should be null');
+    System.assertEquals(4456, Math.round(insertedJobApps.get(jobSalarySingle.Id).Estimated_Monthly_Paycheck__c), 'Single Filing - This field should equal 4456');
+    Assert.areEqual(53467.00, insertedJobApps.get(jobSalarySingle.Id).Take_Home_Pay__c, 'Single Filing - Take_Home_Pay__c should equal 53467.00');
+    System.assertEquals(4665, Math.round(insertedJobApps.get(jobSalaryMarried.Id).Estimated_Monthly_Paycheck__c), 'Married Filing - This field should equal 4665');
+    Assert.areEqual(55979.50, insertedJobApps.get(jobSalaryMarried.Id).Take_Home_Pay__c, 'Married Filing - Take_Home_Pay__c should equal 55979.50');
+    Assert.areEqual(null, insertedJobApps.get(jobNull.Id).Estimated_Weekly_Paycheck__c, 'For a null salary, the weekly paycheck should also be null');
+    System.assertEquals(1028, Math.round(insertedJobApps.get(jobSalarySingle.Id).Estimated_Weekly_Paycheck__c), 'For the given salary for filing single, the weekly paycheck should be 1028');
+
+}
+
 
     @isTest
     static void testJobApplicationTrigger_setPrimaryContactBeforeUpdate() {
@@ -50,35 +69,58 @@ public with sharing class JobQuestTest {
     @isTest
     static void testJobApplicationTrigger_takeHomePayBeforeUpdate(){
         Job_Application__c[] jobAppList = new Job_Application__c[]{};
+        
         Job_Application__c jobNull = new Job_Application__c(   //jobNull means Salary field is null
             Job_Title__c = 'Salesforce Dev'
-        ); 
+        );
         jobAppList.add(jobNull);
-
-        Job_Application__c jobSalary = new Job_Application__c(
-            Job_Title__c = 'Jr. Salesforce Dev',
-            Salary__c = 65000
-        ); 
-        jobAppList.add(jobSalary);
-        insert jobAppList;  //this will again trigger the after insert trigger
-        List<Id> insertedIds = new List<Id>();
-            for(Job_Application__c jobApp : jobAppList) {
-                insertedIds.add(jobApp.Id);
-            }  
+        
+        Job_Application__c jobSalarySingle = new Job_Application__c(
+            Job_Title__c = 'Jr. Salesforce Dev - Single',
+            Salary__c = 65000,
+            Single_or_Married_filing_Jointly__c = 'Filing Single'
+        );
+        jobAppList.add(jobSalarySingle);
+    
+        Job_Application__c jobSalaryJoint = new Job_Application__c(
+            Job_Title__c = 'Jr. Salesforce Dev - Jointly',
+            Salary__c = 65000,
+            Single_or_Married_filing_Jointly__c = 'Filing Married (jointly) '
+        );
+        jobAppList.add(jobSalaryJoint);
+        
+        insert jobAppList;  //this will trigger the after insert trigger
+        
+        // Update the records
         jobNull.Salary__c = 65000;
-        jobSalary.Salary__c = 70000;
-        update jobAppList; //this change should trigger the after update trigger
-
-        List<Job_Application__c> takeHomePayList = [SELECT Id, Take_Home_Pay__c, Estimated_Monthly_Paycheck__c 
-                        FROM Job_Application__c
-                        WHERE Id
-                        IN: insertedIds];
-                      
-        Assert.areEqual(4456, Math.round(takeHomePayList[0].Estimated_Monthly_Paycheck__c), 'This field should equal 4456'); 
-        System.assertEquals(4749, Math.round(takeHomePayList[1].Estimated_Monthly_Paycheck__c), 'This field should equal 4749'); 
-        Assert.areEqual(53467.00, takeHomePayList[0].Take_Home_Pay__c, 'Take_Home_Pay__c should equal 53467.00');
-        Assert.areEqual(56984.50, takeHomePayList[1].Take_Home_Pay__c, 'Take_Home_Pay__c should equal 56984.50');
-    } 
+        jobNull.Single_or_Married_filing_Jointly__c = 'Filing Single'; // setting filing status for the null record
+        
+        jobSalarySingle.Salary__c = 70000;
+    
+        jobSalaryJoint.Salary__c = 70000;
+        
+        update jobAppList; //this change should trigger the after update trigger so I don't have to call the method
+        
+        // Query updated records
+        Map<Id, Job_Application__c> updatedJobApps = new Map<Id, Job_Application__c>(
+            [SELECT Id, Take_Home_Pay__c, Estimated_Monthly_Paycheck__c, Estimated_Weekly_Paycheck__c, Single_or_Married_filing_Jointly__c 
+             FROM Job_Application__c
+             WHERE Id IN: jobAppList]
+        );
+        
+        // Assertions
+        System.assertEquals(4456, Math.round(updatedJobApps.get(jobNull.Id).Estimated_Monthly_Paycheck__c), 'Single Filing after update from null salary - This field should equal 4456');
+        Assert.areEqual(53467.00, updatedJobApps.get(jobNull.Id).Take_Home_Pay__c, 'Single Filing after update from null salary - Take_Home_Pay__c should equal 53467.00');
+        
+        System.assertEquals(4749, Math.round(updatedJobApps.get(jobSalarySingle.Id).Estimated_Monthly_Paycheck__c), 'Single Filing after salary update - This field should equal 4749');
+        Assert.areEqual(56984.50, updatedJobApps.get(jobSalarySingle.Id).Take_Home_Pay__c, 'Single Filing after salary update - Take_Home_Pay__c should equal 56984.50');
+        System.assertEquals(5000, Math.round(updatedJobApps.get(jobSalaryJoint.Id).Estimated_Monthly_Paycheck__c), 'Married Filing Jointly after salary update - This field should equal 5000');
+        Assert.areEqual(59997.00, updatedJobApps.get(jobSalaryJoint.Id).Take_Home_Pay__c, 'Married Filing Jointly after salary update - Take_Home_Pay__c should equal 59997.00');
+        System.assertEquals(1028, Math.round(updatedJobApps.get(jobNull.Id).Estimated_Weekly_Paycheck__c), 'Single Filing after update from null salary - Weekly paycheck should be 1028');
+        System.assertEquals(1096, Math.round(updatedJobApps.get(jobSalarySingle.Id).Estimated_Weekly_Paycheck__c), 'Single Filing after salary update - Weekly paycheck should be 1096');
+        System.assertEquals(1154, Math.round(updatedJobApps.get(jobSalaryJoint.Id).Estimated_Weekly_Paycheck__c), 'Married Filing Jointly after salary update - Weekly paycheck should be 1154');
+}
+    
     
 @isTest
 static void testJobApplicationTrigger_jobAppTaskHelper() {
