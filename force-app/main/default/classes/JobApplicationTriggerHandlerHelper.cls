@@ -38,5 +38,5 @@
             jobApp.Estimated_Monthly_Paycheck__c = jobApp.Take_Home_Pay__c / 12;
         }
     }
-    
+    // source for tax brackets: https://www.forbes.com/advisor/taxes/taxes-federal-income-tax-bracket/  2023 tax brackets
     

@@ -1,0 +1,42 @@
+<template>
+    <div class="custom-border">
+        <lightning-card title="JobQuest Paycheck Calculator" icon-name="utility:connected_apps">
+            <div class="title-container">
+                <h2 class="custom-title">JobQuest is lightning fast!</h2>
+            </div>
+            
+            <div class="input-result-container">
+                <div class="input-output-container">
+                    <lightning-combobox
+                        name="filingStatus"
+                        label="Filing Status"
+                        value={filingStatusValue}
+                        placeholder="Select Filing Status"
+                        options={options}
+                        onchange={onFilingStatusChange}></lightning-combobox><br>
+
+                    <lightning-input label="Input your salary and press a button." type="number" class="slds-text-align_center" name="Number1" value={num1} placeholder="Input salary here" onchange={onInputChangeHandler} required></lightning-input><br>
+                </div>
+                
+                <div class="slds-box result-box">
+                    <div class="slds-text-align_center">
+                    <strong>What is your take-home pay after taxes?</strong>
+                    <div>{formattedResult}</div>
+                    </div>
+                </div>
+            </div>
+
+            <lightning-layout horizontal-align="space">
+                <lightning-layout-item padding="around-small">
+                    <lightning-button label="Monthly Paycheck" variant="brand" onclick={calculateMonthlyPay}></lightning-button>
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-small">
+                    <lightning-button label="Annual Net Income" variant="brand" onclick={calculateAnnualPay}></lightning-button>
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-small">
+                    <lightning-button label="Weekly Paycheck" variant="brand" onclick={calculateWeeklyPay}></lightning-button>
+                </lightning-layout-item>
+            </lightning-layout>
+        </lightning-card>
+    </div>
+</template>
