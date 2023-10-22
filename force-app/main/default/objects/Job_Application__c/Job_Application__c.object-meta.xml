@@ -162,7 +162,7 @@
     <externalSharingModel>Private</externalSharingModel>
     <label>Job Application</label>
     <nameField>
-        <displayFormat>J-{0000}</displayFormat>
+        <displayFormat>J-{0000000000}</displayFormat>
         <label>Job Application  Name</label>
         <trackHistory>false</trackHistory>
         <type>AutoNumber</type>
