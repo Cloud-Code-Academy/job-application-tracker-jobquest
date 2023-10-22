@@ -5,7 +5,7 @@ global class JobApplicationBatch implements Database.Batchable<sObject> {
         String query = 'SELECT Id, Status__c, Notes__c, Follow_up_Date__c FROM Job_Application__c WHERE Follow_up_Date__c <= :aMonthAgo AND (Status__c != \'Accepted\' AND Status__c != \'Closed\')';
         return Database.getQueryLocator(query);
     }
-    global void execute(Database.BatchableContext BC, List<sObject> scope) {    //Scope has two connotations in Apex batch jobs. 1. related to the records returned from the start method. 2. defines how many records the execute method receives in each iteration of your job. 
+    global void execute(Database.BatchableContext BC, List<sObject> scope) {    //Scope has two connotations in Apex batch jobs. 1. related to the records returned from the start method. 2. defines how many records the execute method receives in each iteration of the job. 
         List<Job_Application__c> applicationsToUpdate = new List<Job_Application__c>();
         for (sObject scop : scope) {            
             Job_Application__c application = (Job_Application__c) scop;
@@ -38,10 +38,15 @@ global class JobApplicationBatch implements Database.Batchable<sObject> {
         }
     }
 }
-
-
-// see the class ScheduleJobApplicationBatch (implements Schedulable) to see how this class is made schedulable
 //the above class cleans up (closes) Job app records that have been left open in which the follow up field is 30 days or over & then sends email to Admin
 //to run this apex anon. enter the following two lines: 
 //JobApplicationBatch batch = new JobApplicationBatch();
     //Database.executeBatch(batch);
+
+// see the class ScheduleJobApplicationBatch (implements Schedulable) to see how this class is made schedulable
+
+//Below is how you schedule it twice a month (1st and 15th)
+//String cron1 = '0 0 0 1 * ? *';   //first of month
+//System.schedule('JobApplicationBatch_1st', cron1, new ScheduleJobApplicationBatch());
+//String cron2 = '0 0 0 15 * ? *';  //15th of month
+//System.schedule('JobApplicationBatch_15th', cron2, new ScheduleJobApplicationBatch());

@@ -39,7 +39,7 @@ public with sharing class JobQuestTest {
         List<Job_Application__c> jobAppList = new List<Job_Application__c> { job0, job1 };
         
         insert jobAppList;
-        update jobAppList;  //update calls trigger no need to call the method
+        update jobAppList;  //update calls trigger so I no need to call the method
 
         List<Job_Application__c> results = [SELECT Id, Company__c, Primary_Contact__c FROM Job_Application__c WHERE Id IN :jobAppList]; //query on job apps
 
@@ -50,7 +50,7 @@ public with sharing class JobQuestTest {
     @isTest
     static void testJobApplicationTrigger_takeHomePayBeforeUpdate(){
         Job_Application__c[] jobAppList = new Job_Application__c[]{};
-        Job_Application__c jobNull = new Job_Application__c(
+        Job_Application__c jobNull = new Job_Application__c(   //jobNull means Salary field is null
             Job_Title__c = 'Salesforce Dev'
         ); 
         jobAppList.add(jobNull);
@@ -124,14 +124,14 @@ static void testJobApplicationTrigger_jobAppTaskHelper() {
     System.assert(foundExpectedTask, 'Expected task subject not found for "Saved" status.');
 
     
-    Assert.areEqual(28, tasksForJobQuest.size(), 'Expected 28 tasks for the job applications');
+    Assert.areEqual(28, tasksForJobQuest.size(), 'Expected 29 tasks for the job applications');
     Assert.areEqual(6, statusToTasks.get('Saved').size(), 'Expected 6 tasks (3 tasks twice) for Saved status.');
     Assert.areEqual(5, statusToTasks.get('Applying').size(), 'Expected 5 tasks for Applying status');
     Assert.areEqual(4, statusToTasks.get('Applied').size(), 'Expected 4 tasks for Applied status');
     Assert.areEqual(5, statusToTasks.get('Interviewing').size(), 'Expected 5 tasks for Interviewing status');
     Assert.areEqual(3, statusToTasks.get('Negotiating').size(), 'Expected 3 tasks for Negotiating status');
     Assert.areEqual(3, statusToTasks.get('Accepted').size(), 'Expected 3 tasks for Accepted status');
-    Assert.areEqual(2, statusToTasks.get('Closed').size(), 'Expected 2 tasks for Closed status');
+    Assert.areEqual(2, statusToTasks.get('Closed').size(), 'Expected 3 tasks for Closed status');
 }
 
    
