@@ -6,7 +6,7 @@ public class JoobleBringMeJobs implements Schedulable { //JoobleBringMeJobs take
     }  
     public static void fetchJobs() { //this will be scheduled but it can run at any time with apex anonymous or hello.apex by typing: JoobleBringMeJobs.fetchJobs(); 
         String endpoint = 'https://jooble.org/api/841aea51-b780-4bbb-ac8b-da65f2065d7f';  //key is hardcoded which would not normally be done, it is a free key with a 500 limit. But I wasn't sure the credentials would transfer to another org when deployed
-        String bodyContent = '{ keywords: "Jr. Salesforce Developer", location: "remote" }';  //these keyword categories are given by Jooble to search the jobs, and refer to Job Title and Location and the stuff in double quotes can be changed ie remote can be changed to Anchorage, Alaska
+        String bodyContent = '{ keywords: "Salesforce Developer", location: "Anchorage" }';  //these keyword categories are given by Jooble to search the jobs, and refer to Job Title and Location and the stuff in double quotes can be changed ie remote can be changed to Anchorage, Alaska
         HttpRequest request = new HttpRequest();
         request.setEndpoint(endpoint);
         request.setMethod('POST'); //this command is consistent with instructions from Jooble
@@ -58,6 +58,7 @@ public class JoobleBringMeJobs implements Schedulable { //JoobleBringMeJobs take
             Job_Application__c jobApp = new Job_Application__c();  //this is a new (instance) record for Job Application to be filled in with jooble job data, then added to list jobsToInsert
             jobApp.Job_Title__c = joobleJob.title;
             jobApp.Location__c = joobleJob.location;
+            joobleJob.snippet = removeHtmlTagsAndEntities(joobleJob.snippet);
             jobApp.Job_Description__c = joobleJob.snippet;
             jobApp.Listing_Pay__c = String.valueOf(joobleJob.salary);  
             jobApp.Job_Post_Link__c = joobleJob.link;
@@ -96,5 +97,12 @@ public class JoobleBringMeJobs implements Schedulable { //JoobleBringMeJobs take
         mail.setPlainTextBody(body);
         Messaging.sendEmail(new Messaging.SingleEmailMessage[] { mail });
     }
+    public static String removeHtmlTagsAndEntities(String input) {  //helper to get rid of some of the html tags showing up in the description
+        if(String.isEmpty(input)) return input;
+        String stripped = input.replaceAll('<[^>]+>', '');
+        stripped = stripped.replace('&nbsp;', ' '); 
+        return stripped.trim();
+    }
+    
 }
 
