@@ -29,6 +29,22 @@ public class EmailHelper {
             emailSent = true; 
         }
     }
+    public static void ThankYouEmailHelperMethod(List<Event> interviews) {
+        List<Messaging.SingleEmailMessage> mails = new List<Messaging.SingleEmailMessage>();
+        
+        for(Event event : interviews) {
+            Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+            mail.setToAddresses(new String[] {'lisamhackler@gmail.com'});
+            mail.setSubject('Reminder: Send Your Thank-You Note');
+            mail.setPlainTextBody('Just a friendly reminder to send a thank-you note following your interview earlier today.');
+            mails.add(mail);
+        }
+        
+        if(mails.size() > 0) {
+            Messaging.sendEmail(mails);
+        }
+    }
 }
+
 
              
