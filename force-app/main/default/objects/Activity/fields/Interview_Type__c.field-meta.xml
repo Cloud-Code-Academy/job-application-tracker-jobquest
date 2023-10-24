@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Interview_Type__c</fullName>
+    <externalId>false</externalId>
+    <inlineHelpText>Recorded interviews are one sided where you are given questions and record your answers.  This is not when an interview records your interview with them.</inlineHelpText>
+    <label>Interview Format</label>
+    <required>false</required>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Phone Interview</fullName>
+                <default>false</default>
+                <label>Phone Interview</label>
+            </value>
+            <value>
+                <fullName>Online Interview</fullName>
+                <default>false</default>
+                <label>Online Interview</label>
+            </value>
+            <value>
+                <fullName>In person Interview</fullName>
+                <default>false</default>
+                <label>In person Interview</label>
+            </value>
+            <value>
+                <fullName>Recorded Interview</fullName>
+                <default>false</default>
+                <label>Recorded Interview</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
