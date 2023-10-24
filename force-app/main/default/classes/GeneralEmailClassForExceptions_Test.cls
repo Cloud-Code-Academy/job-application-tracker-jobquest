@@ -10,11 +10,8 @@ private class GeneralEmailClassForExceptions_Test {
             Integer result = 10 / i;
         } catch (Exception except) {
             GeneralEmailClassForExceptions.sendExceptionEmailtest('Test Exception', except);
+            System.assertEquals(1, Limits.getEmailInvocations(), 'One email should have been sent');  //test would not pass until I put assertion before Test.stopTest
         }
-
         Test.stopTest();
-        
-     
-        System.assertEquals(1, Limits.getEmailInvocations(), 'One email should have been sent');
     }
 }
