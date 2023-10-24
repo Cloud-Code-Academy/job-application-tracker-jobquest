@@ -14,7 +14,7 @@ global class JobApplicationBatch implements Database.Batchable<sObject> {
             applicationsToUpdate.add(application);
         }
         if (applicationsToUpdate.size() > 0) {
-            List<Database.SaveResult> saveResults = Database.update(applicationsToUpdate, false);  //false allows for partial save as in not all or nothing
+            List<Database.SaveResult> saveResults = Database.update(applicationsToUpdate, false);  //false allows for partial save as in NOT all or nothing
             for (Database.SaveResult saveRest : saveResults) {  
                 if (!saveRest.isSuccess()) {
                     for (Database.Error err : saveRest.getErrors()) {

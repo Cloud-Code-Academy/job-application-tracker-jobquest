@@ -1,5 +1,5 @@
 @isTest
-private class TestInterviewEmailReminder {
+private class InterviewEmailReminder_Test {
     
     @isTest static void testInterviewEmailReminder() {
         Job_Application__c testJob = new Job_Application__c(Job_Title__c = 'Dev');

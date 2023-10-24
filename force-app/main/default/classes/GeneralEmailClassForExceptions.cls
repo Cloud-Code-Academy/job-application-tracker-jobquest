@@ -1,6 +1,6 @@
 public with sharing class GeneralEmailClassForExceptions {
     
-    public static void sendExceptionEmail(String subject, Exception except) {
+    public static void sendExceptionEmailtest (String subject, Exception except) {
         Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
         mail.setToAddresses(new String[] { 'lisamhackler@gmail.com' });  //this would be replaced by an org email for admins, not hardcoded
         mail.setSubject(subject);

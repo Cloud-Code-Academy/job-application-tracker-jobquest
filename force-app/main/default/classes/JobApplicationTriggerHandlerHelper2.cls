@@ -60,3 +60,4 @@ public with sharing class JobApplicationTriggerHandlerHelper2 {
         }
     }
 }
+ // source for tax brackets: https://www.forbes.com/advisor/taxes/taxes-federal-income-tax-bracket/  2023 tax brackets

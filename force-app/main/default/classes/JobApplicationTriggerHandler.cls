@@ -71,7 +71,8 @@ public override void afterInsert() {
             insert tasksToInsert;
     } 
     catch (Exception except) {
-        GeneralEmailClassForExceptions.sendExceptionEmail('Error in Job Application Trigger Handler', except);
+        //GeneralEmailClassForExceptions.sendExceptionEmail('Error in Job Application Trigger Handler:', except);
+        System.debug('Error in Job Application Trigger Handler' + except);
     } 
     finally {
         isTriggerRunning = false;
@@ -93,7 +94,8 @@ public override void afterUpdate() {
         }
     } 
     catch (Exception except) {
-        GeneralEmailClassForExceptions.sendExceptionEmail('Error in Job Application Trigger Handler', except);
+        //GeneralEmailClassForExceptions.sendExceptionEmail('Error in Job Application Trigger Handler:', except);
+        System.debug('Error in Job Application Trigger Handler ' + except);
     } 
     finally {
         isTriggerRunning = false;

@@ -1,5 +1,5 @@
 @isTest
-private class JoobleBringMeJobsTest {
+private class JoobleBringMeJobs_Test {
     
     // Implement mock callout class
     private class MockJoobleResponse implements HttpCalloutMock {
