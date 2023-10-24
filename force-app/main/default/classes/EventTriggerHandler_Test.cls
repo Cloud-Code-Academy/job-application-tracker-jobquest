@@ -1,7 +1,7 @@
 @isTest     
 public with sharing class EventTriggerHandler_Test {
     @isTest
-    static User createTestUser(){  //so much is required to put in one test user
+    static User createTestUser(){  //so much info required for just in one test user
         User testUser = new User(
             Alias = 'tuser', 
             Email = 'testuser@example.com',
@@ -18,7 +18,7 @@ public with sharing class EventTriggerHandler_Test {
     }
    
     @isTest   
-    static void testEventTriggerHandlerBeforeInsert(){    
+    static void testEventTriggerHandlerBeforeInsert(){      //this makes sure overlapping interviews are not scheduled
         User testUser = createTestUser();   //see method right above this one
         Event event1 = new Event(Subject = 'Job Interview', OwnerId = testUser.Id, StartDateTime = DateTime.now(), EndDateTime = DateTime.now().addHours(1));
         Event event2 = new Event(Subject = 'Job Interview', OwnerId = testUser.Id, StartDateTime = DateTime.now().addHours(2), EndDateTime = DateTime.now().addHours(3));
@@ -39,7 +39,7 @@ public with sharing class EventTriggerHandler_Test {
     }
     
     @isTest  //this one kept failing to give an exception until I separated it from the test above it for some reason
-    static void testEventTriggerHandlerBeforeUpdate(){
+    static void testEventTriggerHandlerBeforeUpdate(){ //again making sure overlapping interviews aren't scheduled on update
         User testUser = createTestUser();
         Event sameOwnerE1 = new Event(Subject = 'Job Interview', OwnerId = testUser.Id, StartDateTime = DateTime.now().addHours(5), EndDateTime = DateTime.now().addHours(6));
         Event sameOwnerE2 = new Event(Subject = 'Job Interview', OwnerId = testUser.Id, StartDateTime = DateTime.now().addHours(5).addMinutes(30), EndDateTime = DateTime.now().addHours(6).addMinutes(30));
