@@ -2,7 +2,7 @@
 private class EmailHelper_Test {
     private static User createTestUser() {
         Profile p = [SELECT Id FROM Profile WHERE Name='Standard User' LIMIT 1];
-
+//creating a user to help test the methods below
         User user = new User(
             Alias = 'tuser',
             Email = 'testuser@test.com',
@@ -19,9 +19,9 @@ private class EmailHelper_Test {
     }
 
     @IsTest
-    static void testEmailHelperMethod() {
+    static void testEmailHelperMethod() {   
         EmailHelper.emailSent = false;
-        
+//this tests the method to remind user of upcoming job interview the day before        
         User testUser = createTestUser();
        
         List<Event> scheduledInterviewList = new List<Event>();
@@ -47,7 +47,7 @@ private class EmailHelper_Test {
     @IsTest
     static void testThankYouEmailHelperMethod() {
         User testUser = createTestUser();
-        
+//this tests the method of sending a reminder to thank interviewers via email within 24 hrs.        
         List<Event> scheduledInterviewList = new List<Event>();
             scheduledInterviewList.add(new Event(
                 Subject = 'Interview ',

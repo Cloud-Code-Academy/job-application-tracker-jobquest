@@ -46,7 +46,7 @@ public with sharing class EventTriggerHandler_Test {
                 
         try {
             insert sameOwnerE1;
-            Assert.isTrue(true, 'No exception expected');
+            System.assert(true, 'No exception expected');
             insert sameOwnerE2;
             System.assert(false, 'Expected an exception because two events for the same owner overlap.');
         } 
