@@ -4,7 +4,7 @@ import calculateTakeHomePay from '@salesforce/apex/JobApplicationTriggerHandlerH
 export default class JobQuestCalculator extends LightningElement {
     @track num1 = 0;
     @track result = 0;
-    @track formattedResult = '$0.00';  // Initialize with default value
+    @track formattedResult = '$0.00';  // this is a default value
     @track filingStatusValue = 'single';
 
     get options() {

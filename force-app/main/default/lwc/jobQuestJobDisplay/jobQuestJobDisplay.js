@@ -3,7 +3,7 @@ import getJobApplications from '@salesforce/apex/JobQuestDisplayApex.getJobAppli
 import deleteJobApplication from '@salesforce/apex/JobQuestDisplayApex.deleteJobApplication';
 import { NavigationMixin } from 'lightning/navigation';
 
-
+//this creates a datatable of the job applications taken from the fields of the job application records
 export default class JobQuestJobDisplay extends NavigationMixin(LightningElement) {
     @track jobApplications = [];
     @track error;
@@ -39,22 +39,17 @@ export default class JobQuestJobDisplay extends NavigationMixin(LightningElement
             }
         });
     }
-    
-    
     handleDelete(event) {
-        const jobId = event.target.dataset.id;  // Get Job Application Id from the button data attribute
+        const jobId = event.target.dataset.id;  // Get Job Application Id 
         console.log("Deleting job with ID:", jobId);
         deleteJobApplication({ jobId: jobId })
             .then(result => {
                 console.log("Deletion successful for job ID:", jobId);
                 this.jobApplications = this.jobApplications.filter(job => job.id !== jobId);
-
-                // Optionally, show a success message (using toast or other UI methods)
             })
             .catch(error => {
                 console.log("Error deleting job ID:", jobId, "Error:", JSON.stringify(error)); 
                 this.error = error;
-                // Handle error, show a message, etc.
             });
     }
 }

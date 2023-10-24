@@ -1,8 +1,7 @@
 @isTest
 private class JoobleBringMeJobs_Test {
     
-    // Implement mock callout class
-    private class MockJoobleResponse implements HttpCalloutMock {
+    private class MockJoobleResponse implements HttpCalloutMock {   //fake call out
         public HttpResponse respond(HttpRequest req) {
             HttpResponse res = new HttpResponse();
             res.setStatusCode(200);//testing for best scenerio will also need to test for when it doesn't work 
@@ -16,7 +15,7 @@ private class JoobleBringMeJobs_Test {
         Test.setMock(HttpCalloutMock.class, new MockJoobleResponse());
         
         Test.startTest();
-        JoobleBringMeJobs.fetchJobs(); 
+        JoobleBringMeJobs.fetchJobs(); //tests method to fetch the jobs from Jooble
         Test.stopTest();
         
         List<Job_Application__c> insertedJobs = [SELECT Job_Title__c, Location__c, Job_Description__c FROM Job_Application__c];

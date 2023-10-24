@@ -1,6 +1,6 @@
 @isTest
-private class JobApplicationBatch_Test {
-    
+private class JobApplicationBatch_Test {    //this tests a method that goes through and closes older job applications that are neither in stage Accepted or Closed
+
     @isTest static void testJobAppBatch() {
         
         // Create test data

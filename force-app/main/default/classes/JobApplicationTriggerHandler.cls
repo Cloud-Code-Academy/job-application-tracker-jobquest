@@ -94,7 +94,7 @@ public override void afterUpdate() {
         }
     } 
     catch (Exception except) {
-        //GeneralEmailClassForExceptions.sendExceptionEmail('Error in Job Application Trigger Handler:', except);
+        //GeneralEmailClassForExceptions.sendExceptionEmail('Error in Job Application Trigger Handler:', except);  //when I'm able to test further, I will uncomment this
         System.debug('Error in Job Application Trigger Handler ' + except);
     } 
     finally {

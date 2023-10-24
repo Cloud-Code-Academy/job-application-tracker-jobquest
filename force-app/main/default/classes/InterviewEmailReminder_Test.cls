@@ -1,11 +1,10 @@
 @isTest
-private class InterviewEmailReminder_Test {
-    
+private class InterviewEmailReminder_Test {   //This simply tests if the the email helper sends out an email to remind about the scheduled job interview
     @isTest static void testInterviewEmailReminder() {
         Job_Application__c testJob = new Job_Application__c(Job_Title__c = 'Dev');
         insert testJob;
 
-        DateTime tomorrowAt9AM = DateTime.newInstance(System.today().addDays(1), Time.newInstance(9, 0, 0, 0));
+        DateTime tomorrowAt9AM = DateTime.newInstance(System.today().addDays(1), Time.newInstance(9, 0, 0, 0));   
         DateTime tomorrowAt10AM = tomorrowAt9AM.addHours(1);
 
         Event testEvent = new Event(

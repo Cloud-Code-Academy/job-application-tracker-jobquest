@@ -2,7 +2,7 @@
 public with sharing class JobApplicationTriggerHandler_Test {
 
 @isTest
-static void testJobApplicationTrigger_takeHomePayBeforeInsert(){
+static void testJobApplicationTrigger_takeHomePayBeforeInsert(){     //this tests the method to determine net pay after taxes and withholding
     Job_Application__c[] jobAppList = new Job_Application__c[]{};
     
     Job_Application__c jobNull = new Job_Application__c(
@@ -24,17 +24,14 @@ static void testJobApplicationTrigger_takeHomePayBeforeInsert(){
     );
     jobAppList.add(jobSalaryMarried);
     
-    // Insert records
     insert jobAppList;
     
-    // Query records
     Map<Id, Job_Application__c> insertedJobApps = new Map<Id, Job_Application__c>(
         [SELECT Id, Take_Home_Pay__c, Estimated_Monthly_Paycheck__c, Estimated_Weekly_Paycheck__c, Single_or_Married_filing_Jointly__c 
          FROM Job_Application__c
          WHERE Id IN: jobAppList]
     );
     
-    // Assertions
     Assert.areEqual(null, insertedJobApps.get(jobNull.Id).Estimated_Monthly_Paycheck__c, 'This field should be null');
     System.assertEquals(4456, Math.round(insertedJobApps.get(jobSalarySingle.Id).Estimated_Monthly_Paycheck__c), 'Single Filing - This field should equal 4456');
     Assert.areEqual(53467.00, insertedJobApps.get(jobSalarySingle.Id).Take_Home_Pay__c, 'Single Filing - Take_Home_Pay__c should equal 53467.00');
@@ -47,7 +44,7 @@ static void testJobApplicationTrigger_takeHomePayBeforeInsert(){
 
 
     @isTest
-    static void testJobApplicationTrigger_setPrimaryContactBeforeUpdate() {
+    static void testJobApplicationTrigger_setPrimaryContactBeforeUpdate() {  //this tests basically the same thing but after update.
         //Create test data
         Account account = new Account(Name = 'Mirand');
         insert account;
@@ -67,7 +64,7 @@ static void testJobApplicationTrigger_takeHomePayBeforeInsert(){
     }
 
     @isTest
-    static void testJobApplicationTrigger_takeHomePayBeforeUpdate(){
+    static void testJobApplicationTrigger_takeHomePayBeforeUpdate(){   //and more testing on the same method as above, I tried combining it with each of the others but for some reason it wouldn't work
         Job_Application__c[] jobAppList = new Job_Application__c[]{};
         
         Job_Application__c jobNull = new Job_Application__c(   //jobNull means Salary field is null
@@ -91,7 +88,7 @@ static void testJobApplicationTrigger_takeHomePayBeforeInsert(){
         
         insert jobAppList;  //this will trigger the after insert trigger
         
-        // Update the records
+        
         jobNull.Salary__c = 65000;
         jobNull.Single_or_Married_filing_Jointly__c = 'Filing Single'; // setting filing status for the null record
         
@@ -101,14 +98,13 @@ static void testJobApplicationTrigger_takeHomePayBeforeInsert(){
         
         update jobAppList; //this change should trigger the after update trigger so I don't have to call the method
         
-        // Query updated records
+        
         Map<Id, Job_Application__c> updatedJobApps = new Map<Id, Job_Application__c>(
             [SELECT Id, Take_Home_Pay__c, Estimated_Monthly_Paycheck__c, Estimated_Weekly_Paycheck__c, Single_or_Married_filing_Jointly__c 
              FROM Job_Application__c
              WHERE Id IN: jobAppList]
         );
         
-        // Assertions
         System.assertEquals(4456, Math.round(updatedJobApps.get(jobNull.Id).Estimated_Monthly_Paycheck__c), 'Single Filing after update from null salary - This field should equal 4456');
         Assert.areEqual(53467.00, updatedJobApps.get(jobNull.Id).Take_Home_Pay__c, 'Single Filing after update from null salary - Take_Home_Pay__c should equal 53467.00');
         
@@ -123,7 +119,7 @@ static void testJobApplicationTrigger_takeHomePayBeforeInsert(){
     
     
 @isTest
-static void testJobApplicationTrigger_jobAppTaskHelper() {
+static void testJobApplicationTrigger_jobAppTaskHelper() {  //we test whether the right number of tasks were inserted depending on status
     // Prepare test data
     Job_Application__c[] jobAppList = new Job_Application__c[] {
         new Job_Application__c(Job_Title__c = 'Salesforce Dev', Status__c = 'Saved'),
@@ -133,31 +129,29 @@ static void testJobApplicationTrigger_jobAppTaskHelper() {
         new Job_Application__c(Job_Title__c = 'Salesforce Dev', Status__c = 'Negotiating'), 
         new Job_Application__c(Job_Title__c = 'Salesforce Dev', Status__c = 'Accepted'), 
         new Job_Application__c(Job_Title__c = 'Salesforce Dev', Status__c = 'Closed'),
-        new Job_Application__c(Job_Title__c = 'Salesforce Dev')  // Defaults to 'Saved'
+        new Job_Application__c(Job_Title__c = 'Salesforce Dev')  // this one Defaults to 'Saved'
     };
 
     insert jobAppList;
 
-    // Retrieve the statuses of the inserted jobs
+    // Get the statuses of the inserted jobs
     Map<Id, String> jobIdToStatus = new Map<Id, String>();
-    for (Job_Application__c insertedJob : [SELECT Id, Status__c FROM Job_Application__c WHERE Id IN :jobAppList]) {
-        jobIdToStatus.put(insertedJob.Id, insertedJob.Status__c);
+    for (Job_Application__c insertedJob : [SELECT Id, Status__c FROM Job_Application__c WHERE Id IN :jobAppList]) { //first we get the Ids of the above inserts job apps
+        jobIdToStatus.put(insertedJob.Id, insertedJob.Status__c);  //we make a map where Id is key to Status
     }
-
-    // Group tasks by status
-    List<Task> tasksForJobQuest = [SELECT Id, WhatId, Subject FROM Task WHERE WhatId IN :jobIdToStatus.keySet()];
-    Map<String, List<Task>> statusToTasks = new Map<String, List<Task>>();
+    List<Task> tasksForJobQuest = [SELECT Id, WhatId, Subject FROM Task WHERE WhatId IN :jobIdToStatus.keySet()]; //we make a list of tasks assigned to the Id of the job apps we inserted and we will loop them
+    Map<String, List<Task>> statusToTasks = new Map<String, List<Task>>();  //here we create a map to pair status to task after we loop the tasks
     for (Task task : tasksForJobQuest) {
-        String status = jobIdToStatus.get(task.WhatId);
-        if (!statusToTasks.containsKey(status)) {
+        String status = jobIdToStatus.get(task.WhatId);  //here we get the task.WhatId 
+        if (!statusToTasks.containsKey(status)) {   
             statusToTasks.put(status, new List<Task>());
         }
-        statusToTasks.get(status).add(task);
+        statusToTasks.get(status).add(task);  //we end up with a map - status paired to task
     }
 
-    // Check for specific task for 'Saved' status
+    
     Boolean foundExpectedTask = false;
-    for (Task task : statusToTasks.get('Saved')) {
+    for (Task task : statusToTasks.get('Saved')) {  //we have a loop through (saved status) tasks until we find one which has the right Subject to make the Boolean true, then we stop.
         if (task.Subject == 'Check if the job description aligns with your interests and values') {
             foundExpectedTask = true;
             break;
@@ -178,7 +172,7 @@ static void testJobApplicationTrigger_jobAppTaskHelper() {
 
    
     @isTest
-    static void testJobApplicationTrigger_jobAppTaskHelperAfterUpdate() {
+    static void testJobApplicationTrigger_jobAppTaskHelperAfterUpdate() { //we use certain statuses and test for certain task Subjects or other task fields
        
         Job_Application__c[] jobAppList = new Job_Application__c[] {
             new Job_Application__c(Job_Title__c = 'Salesforce Dev', Status__c = 'Interviewing'),     
@@ -209,8 +203,8 @@ static void testJobApplicationTrigger_jobAppTaskHelper() {
         }   
     }
     @isTest
-    static void testJobApplicationTrigger_jobAppTaskHelperAnotherUpdate(){
-        Job_Application__c[] jobAppList = new Job_Application__c[] {
+    static void testJobApplicationTrigger_jobAppTaskHelperAnotherUpdate(){    //now we do it all over again for update the test kept failing when I joined it with insert, its more complicated with update, because
+        Job_Application__c[] jobAppList = new Job_Application__c[] {         // you have to add the job app insert status tasks to the updated status tasks 
             new Job_Application__c(Job_Title__c = 'Salesforce Dev', Status__c = 'Saved'),
             new Job_Application__c(Job_Title__c = 'Salesforce Dev', Status__c = 'Applying'),
             new Job_Application__c(Job_Title__c = 'Salesforce Dev', Status__c = 'Applied'),

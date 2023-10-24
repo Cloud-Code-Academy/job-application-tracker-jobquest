@@ -1,5 +1,5 @@
 @isTest
-public with sharing class JobQuestDisplayApex_Test {
+public with sharing class JobQuestDisplayApex_Test {  //this tests the apex part of the LWC JobQuestDisplay, does it return the right amount of job applications
    
     @isTest static void testGetJobApplications() {
     Account testCo = new Account(Name = 'Test Co');

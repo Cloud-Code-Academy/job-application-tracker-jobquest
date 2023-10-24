@@ -1,4 +1,5 @@
-//this is for a collection of applications
+//This is a number of helper methods
+// collection of applications, note s on configureTasks
 public with sharing class JobAppTaskHelper {
     public static void configureTasks(List<Task> tasksToInsert, List<Job_Application__c> jobApplications, String taskSubject, Integer daysToAdd) {
         for(Job_Application__c jobApp : jobApplications) {
@@ -13,35 +14,35 @@ public with sharing class JobAppTaskHelper {
         }
     }
 
-   // is for a single job application going through loop
+   // single job application 
     public static void configureTask(List<Task> tasksToInsert, Id jobId, Id jobOwnerId, String taskSubject, Integer daysToAdd) {
         Task newTask = new Task();
         newTask.WhatId = jobId;
         newTask.ActivityDate = Date.Today().addDays(daysToAdd);
-        newTask.Priority = 'High';
+        newTask.Priority = 'High';  //I set every task as High priority. User can change it but these tasks are high priority if one wants to get a job
         newTask.OwnerId = jobOwnerId;
         newTask.Subject = taskSubject;
         newTask.Status = 'Not Started';
         tasksToInsert.add(newTask);
     }
 
-    public static List<Task> handleInsertedJobs(Map<Id, Job_Application__c> newJobMap, List<Task> tasksToInsert) {
+    public static List<Task> handleInsertedJobs(Map<Id, Job_Application__c> newJobMap, List<Task> tasksToInsert) { //inserted jobs
         taskDetails(newJobMap.values(), tasksToInsert);
         return tasksToInsert;
     }
     
-    public static List<Task> handleUpdatedJobs(Map<Id, Job_Application__c> statusChangedMap, List<Task> tasksToInsert) {
+    public static List<Task> handleUpdatedJobs(Map<Id, Job_Application__c> statusChangedMap, List<Task> tasksToInsert) {  //uses statusChangedMap for Updated jobs
         taskDetails(statusChangedMap.values(), tasksToInsert);
         return tasksToInsert;
     }
     
-    public static void taskDetails(List<Job_Application__c> jobs, List<Task> tasksToInsert) {
+    public static void taskDetails(List<Job_Application__c> jobs, List<Task> tasksToInsert) {  //for inserting
         for(Job_Application__c job : jobs) {
             Id jobId = job.Id;
             Id jobOwnerId = job.OwnerId;
             List<Job_Application__c> jobList = new List<Job_Application__c>{ job }; // Creating a list for a single job
             
-            switch on job.Status__c {
+            switch on job.Status__c {   //I like using the Subject for the task because sometimes I need to see everything there and not have to click again to read more
                 when 'Saved' {
                     List<Job_Application__c> singleJobList = new List<Job_Application__c>{ job };
                     configureTasks(tasksToInsert, jobList, 'Check if the job description aligns with your interests and values', 1);
@@ -60,9 +61,9 @@ public with sharing class JobAppTaskHelper {
                 when 'Applied' {
                     List<Job_Application__c> singleJobList = new List<Job_Application__c>{ job };
                     configureTask(tasksToInsert, jobId, jobOwnerId,'Reach out to the hiring manager or recruiter', 3);
-                    configureTask(tasksToInsert, jobId, jobOwnerId,'Follow up on your application via email weekly', 7);//don't forget reoccurring?
+                    configureTask(tasksToInsert, jobId, jobOwnerId,'Follow up on your application via email weekly', 7);
                     configureTask(tasksToInsert, jobId, jobOwnerId,'Continue identifying and saving similar job opportunities', 7);
-                    configureTask(tasksToInsert, jobId, jobOwnerId,'Set up weekly networking calls to explore similar companies/roles', 7);  //reoccuring??
+                    configureTask(tasksToInsert, jobId, jobOwnerId,'Set up weekly networking calls to explore similar companies/roles', 7); 
                 }
                 when 'Interviewing' {
                     List<Job_Application__c> singleJobList = new List<Job_Application__c>{ job };
@@ -70,7 +71,7 @@ public with sharing class JobAppTaskHelper {
                     JobAppTaskHelper.configureTask(tasksToInsert, jobId, jobOwnerId,'Practice answering behavioral interview questions', 2);
                     JobAppTaskHelper.configureTask(tasksToInsert, jobId, jobOwnerId,'Research the company and your interviewers', 5);
                     JobAppTaskHelper.configureTask(tasksToInsert, jobId, jobOwnerId,'Set up your virtual interview space and test your tech', 5);
-                    JobAppTaskHelper.configureTask(tasksToInsert, jobId, jobOwnerId,'Set up reminder & template to send thank you emails within 24 hours', 1); //set up reminder email?
+                    JobAppTaskHelper.configureTask(tasksToInsert, jobId, jobOwnerId,'Set up reminder & template to send thank you emails within 24 hours', 1); 
                 }
                 when 'Negotiating' {
                     List<Job_Application__c> singleJobList = new List<Job_Application__c>{ job };
