@@ -21,5 +21,6 @@ public with sharing class JobQuestDisplayApex_Test {
         
     System.assertEquals(5, returnedApplications.size(), 'Expected 5 job applications to be returned.');
     }
+}
 
    
