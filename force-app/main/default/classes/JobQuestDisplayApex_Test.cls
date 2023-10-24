@@ -1,5 +1,5 @@
 @isTest
-public with sharing class JobQuestDisplayApex_Test {  //this tests the apex part of the LWC JobQuestDisplay, does it return the right amount of job applications
+public with sharing class JobQuestDisplayApex_Test {  //this tests the apex part of the LWC JobQuestDisplay, does it return the right amount of job applications?
    
     @isTest static void testGetJobApplications() {
     Account testCo = new Account(Name = 'Test Co');
@@ -19,7 +19,7 @@ public with sharing class JobQuestDisplayApex_Test {  //this tests the apex part
         List<Job_Application__c> returnedApplications = JobQuestDisplayApex.getJobApplications();
     Test.stopTest();
         
-    System.assertEquals(5, returnedApplications.size(), 'Expected 5 job applications to be returned.');
+    Assert.areEqual(5, returnedApplications.size(), 'Expected 5 job applications to be returned.');
     }
 }
 
