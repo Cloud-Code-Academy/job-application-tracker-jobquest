@@ -6,7 +6,7 @@ public class JoobleBringMeJobs implements Schedulable { //JoobleBringMeJobs take
     }  
     public static void fetchJobs() { //this will be scheduled but it can run at any time with apex anonymous or hello.apex by typing: JoobleBringMeJobs.fetchJobs(); 
         String endpoint = 'https://jooble.org/api/841aea51-b780-4bbb-ac8b-da65f2065d7f';  //key is hardcoded which would not normally be done, it is a free key with a 500 limit. But I wasn't sure the credentials would transfer to another org when deployed
-        String bodyContent = '{ keywords: "Salesforce Jr. Developer", location: "Remote" }';  //these keyword categories are given by Jooble to search the jobs, and refer to Job Title and Location and the stuff in double quotes can be changed ie remote can be changed to Anchorage, Alaska
+        String bodyContent = '{ keywords: "Junior Salesforce Developer", location: "Remote" }';  //these keyword categories are given by Jooble to search the jobs, and refer to Job Title and Location and the stuff in double quotes can be changed ie remote can be changed to Anchorage, Alaska
         HttpRequest request = new HttpRequest();
         request.setEndpoint(endpoint);
         request.setMethod('POST'); //this command is consistent with instructions from Jooble
