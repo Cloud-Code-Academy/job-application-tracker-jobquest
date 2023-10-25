@@ -76,6 +76,10 @@
             <default>false</default>
         </values>
         <values>
+            <fullName>Job Interview</fullName>
+            <default>false</default>
+        </values>
+        <values>
             <fullName>Meeting</fullName>
             <default>false</default>
         </values>
