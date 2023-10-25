@@ -1,14 +1,17 @@
 public class EmailHelper {
     public static Boolean emailSent = false;
+    
 
     public static void EmailHelperMethod (List<Event> scheduledInterviewList) {
+        List<User> adminUsers = [SELECT Email FROM User WHERE Profile.Name = 'System Administrator' LIMIT 1];
         emailSent = false; 
-
+        if (adminUsers.size() > 0) {
+            String adminEmail = adminUsers[0].Email;
         List<Messaging.SingleEmailMessage> emailsToSend = new List<Messaging.SingleEmailMessage>();
         //reminder that the next day a job interview is scheduled
         for (Event interview : scheduledInterviewList) {
             Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
-            mail.setToAddresses(new String[] {'testemail@example.com'});   //to test I put a different email (to admin)
+            mail.setToAddresses(new String[] {adminEmail});   //to test I put a different email (to admin)
             mail.setSubject('Tomorrow is a big day! Are you ready for a ' + interview.Subject);
             String body = 'You have an interview scheduled on ' + interview.StartDateTime.format();
             
@@ -34,18 +37,24 @@ public class EmailHelper {
                 throw new EmailException('Failed to send email: ' + except.getMessage());
             }
         }
+        }
+        else{
+            System.debug('No Salesforce Administrator found.');
+        }
     }
 
     public static void ThankYouEmailHelperMethod(List<Event> interviews) {   //sends reminder to send thank you within 24 hrs.
         List<Messaging.SingleEmailMessage> mails = new List<Messaging.SingleEmailMessage>();
-        
-        for(Event event : interviews) {
-            Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
-            mail.setToAddresses(new String[] {'testemail@example.com'});  //to test I put a different email in 
-            mail.setSubject('Reminder: Send Your Thank-You Note');
-            mail.setPlainTextBody('Just a friendly reminder to send a thank-you note following your interview earlier today.');
-            mails.add(mail);
-        }
+        List<User> adminUsers = [SELECT Email FROM User WHERE Profile.Name = 'System Administrator' LIMIT 1];
+        if (adminUsers.size() > 0) {
+            String adminEmail = adminUsers[0].Email;
+            for(Event event : interviews) {
+                Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+                mail.setToAddresses(new String[] {adminEmail});  //to test I put a different email in 
+                mail.setSubject('Reminder: Send Your Thank-You Note');
+                mail.setPlainTextBody('Just a friendly reminder to send a thank-you note following your interview earlier today.');
+                mails.add(mail);
+            }
         
         if(mails.size() > 0) {
             try {
@@ -54,6 +63,10 @@ public class EmailHelper {
                 throw new EmailException('Failed to send thank you email: ' + e.getMessage());
             }
         }
+    }
+    else {
+        System.debug('No Salesforce Administrator found.');
+    }
     }
 
     public class EmailException extends Exception {}
