@@ -71,7 +71,7 @@ public with sharing class JobAppTaskHelper {
                     JobAppTaskHelper.configureTask(tasksToInsert, jobId, jobOwnerId,'Practice answering behavioral interview questions', 2);
                     JobAppTaskHelper.configureTask(tasksToInsert, jobId, jobOwnerId,'Research the company and your interviewers', 5);
                     JobAppTaskHelper.configureTask(tasksToInsert, jobId, jobOwnerId,'Set up your virtual interview space and test your tech', 5);
-                    JobAppTaskHelper.configureTask(tasksToInsert, jobId, jobOwnerId,'Set up reminder & template to send thank you emails within 24 hours', 1); 
+                    JobAppTaskHelper.configureTask(tasksToInsert, jobId, jobOwnerId,'Post Interview: Send thank you emails within 24 hours (you should receive a reminder email)', 1); 
                 }
                 when 'Negotiating' {
                     List<Job_Application__c> singleJobList = new List<Job_Application__c>{ job };
