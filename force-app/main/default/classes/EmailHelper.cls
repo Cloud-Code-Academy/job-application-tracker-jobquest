@@ -25,10 +25,13 @@ public class EmailHelper {
         
         if(!emailsToSend.isEmpty()) {
             try {
+                System.debug('Preparing to send email...');
                 Messaging.sendEmail(emailsToSend);
                 emailSent = true; 
-            } catch (Exception e) {
-                throw new EmailException('Failed to send email: ' + e.getMessage());
+                System.debug('Email sent.');
+            } catch (Exception except) {
+                System.debug('Error sending email: ' + except.getMessage());
+                throw new EmailException('Failed to send email: ' + except.getMessage());
             }
         }
     }
