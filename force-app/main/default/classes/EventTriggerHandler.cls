@@ -41,8 +41,8 @@ public with sharing class EventTriggerHandler extends TriggerHandler {
 
         List<Event> allEvents = [SELECT Id, StartDateTime, EndDateTime   //we query existing interview date/time that we aren't already processing
                                  FROM Event 
-                                 WHERE Subject = 'Job Interview' 
-                                 AND Id NOT IN :this.newEventList];
+                                 WHERE Id NOT IN :this.newEventList];  //Subject = 'Job Interview' 
+                                 // Id NOT IN :this.newEventList];
 
         Integer counter = 0;
         for (Event existingEvent : allEvents) {
