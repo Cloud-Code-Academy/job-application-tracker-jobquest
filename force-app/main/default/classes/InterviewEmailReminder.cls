@@ -9,8 +9,9 @@ public class InterviewEmailReminder {
                   
                                                         
                                                         
-        if(scheduledInterviewList != null)
+        if(!scheduledInterviewList.isEmpty()){
             EmailHelper.EmailHelperMethod(scheduledInterviewList);//email Helper sends the reminder email
+        }
     }   
     public static void ThankYouNoteReminderMethod() {
         Date today = System.Today();                         //this looks for interviews scheduled the same day and sends a reminder to send the thank you email (template in org)
