@@ -19,7 +19,7 @@ public class JobApplicationTriggerHandler extends TriggerHandler {
                 Boolean isSingle = (newJobApp.Single_or_Married_filing_Jointly__c == 'Filing Single');
                 new JobApplicationTriggerHandlerHelper2(newJobApp, isSingle);
             }
-        } 
+        }
     }
     //The trigger below checks for job application records without primary contacts before updates. 
     //Then assigns the null fields a contact related to the company of the job application. 
@@ -29,7 +29,7 @@ public class JobApplicationTriggerHandler extends TriggerHandler {
         Map<Id,Id> jobAccountIdMap = new Map<Id,Id>();
         for(Job_Application__c job : newJobMap.values()){   
             if (job.Primary_Contact__c == null && job.Company__c != null) {
-                setJobId.add(job.Id); 
+                setJobId.add(job.Id);
                 jobAccountIdMap.put(job.Id, job.Company__c);  //note: here we store the job app Id as key, and the job app AccountId is stored on the field (lookup field) Company__c
             }
         }
@@ -43,9 +43,9 @@ public class JobApplicationTriggerHandler extends TriggerHandler {
                                     LIMIT 1]) {
                 contactsMap.put(contact.AccountId, contact);
             }
-        
+
             for(Job_Application__c job : newJobMap.values()){
-                if(setJobId.contains(job.Id) && contactsMap.containsKey(job.Company__c)) {   
+                if(setJobId.contains(job.Id) && contactsMap.containsKey(job.Company__c)) {
                     job.Primary_Contact__c = contactsMap.get(job.Company__c).Id; //here we set the Primary Contact field , by getting the account Id on the contact that matches the Company Id on the job app
                 }
             }
