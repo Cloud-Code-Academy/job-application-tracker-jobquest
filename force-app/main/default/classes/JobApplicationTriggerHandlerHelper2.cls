@@ -23,7 +23,7 @@ public with sharing class JobApplicationTriggerHandlerHelper2 { //this is the co
         jobApp.Estimated_Monthly_Paycheck__c = (jobApp.Take_Home_Pay__c / 12).setScale(2, System.RoundingMode.HALF_UP);                              //so the 2 means two decimal places and the rounding Mode is System.RoundingMode.HALF_UP
         jobApp.Estimated_Weekly_Paycheck__c = (jobApp.Take_Home_Pay__c / 52).setScale(2, System.RoundingMode.HALF_UP);
     }
-    private Decimal calculateTax(Decimal taxableIncome) { 
+    private Decimal calculateTax(Decimal taxableIncome) {   // source for tax brackets: https://www.forbes.com/advisor/taxes/taxes-federal-income-tax-bracket/  2023 tax brackets
         if (isSingle) {   //tax brackets and taxable income for single filer
             if (taxableIncome <= 11000) {
                 return taxableIncome * 0.10;
@@ -69,7 +69,7 @@ public with sharing class JobApplicationTriggerHandlerHelper2 { //this is the co
             }
         }
     }
-    @AuraEnabled(cacheable=true)
+    @AuraEnabled(cacheable=true)   //this part is for the lwc (JobQuest Calculator2)
     public static Decimal calculateTakeHomePay(Decimal salary, String filingStatus, String period) {   //calculateTakeHomePay method defined here is utilized by jobQuestCalc2.js for the LWC  as well as the record fields on the Job Application object
         Job_Application__c jobApp = new Job_Application__c();
         jobApp.Salary__c = salary;
