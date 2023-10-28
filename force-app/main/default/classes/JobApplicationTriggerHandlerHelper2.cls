@@ -7,8 +7,8 @@ public with sharing class JobApplicationTriggerHandlerHelper2 { //this is the co
             jobApp.Estimated_Federal_Tax__c = null;
             return;
         }
-        Decimal salary = jobApp.Salary__c;
-        Decimal standardDeduct = isSingle ? 13850 : 27600;   ////This is also a ternary conditional operation, which acts as short hand for an if-then-else statement. if single file is true, deduct is 13850, if married & filing jointly standard deduct is 27600
+        Decimal salary = jobApp.Salary__c;                   //The 2023 standard deduction is $13,850 for single filers, $27,700 for those married filing jointly   https://www.nerdwallet.com/article/taxes/standard-deduction              
+        Decimal standardDeduct = isSingle ? 13850 : 27700;   //This is also a ternary conditional operation, which acts as short hand for an if-then-else statement. if single file is true, deduct is 13850, if married & filing jointly standard deduct is 27600
         jobApp.Standard_Deduction__c = standardDeduct;
 
         Decimal taxableIncome = salary - standardDeduct;
@@ -25,21 +25,48 @@ public with sharing class JobApplicationTriggerHandlerHelper2 { //this is the co
     }
     private Decimal calculateTax(Decimal taxableIncome) { 
         if (isSingle) {   //tax brackets and taxable income for single filer
-            if (taxableIncome <= 11000) return taxableIncome * 0.10;                             //you are taxed the amount you make in each bracket actually, so the first 1,100 you are taxed .10, then excess $$ over that at .12 and on up...
-            if (taxableIncome <= 44725) return 1100 + (taxableIncome - 11000) * 0.12;
-            if (taxableIncome <= 95375) return 5147 + (taxableIncome - 44725) * 0.22;
-            if (taxableIncome <= 182100) return 16290 + (taxableIncome - 95375) * 0.24;
-            if (taxableIncome <= 231250) return 37104 + (taxableIncome - 182100) * 0.32;
-            if (taxableIncome <= 578125) return 52832 + (taxableIncome - 231250) * 0.35;
-            return 174238.25 + (taxableIncome - 578125) * 0.37;
-        } else {                                          //tax brackets and taxable income for married joint filing
-            if (taxableIncome <= 22000) return taxableIncome * 0.10;
-            if (taxableIncome <= 89450) return 2200 + (taxableIncome - 22000) * 0.12;
-            if (taxableIncome <= 190750) return 10294 + (taxableIncome - 89450) * 0.22;
-            if (taxableIncome <= 364200) return 32580 + (taxableIncome - 190750) * 0.24;
-            if (taxableIncome <= 462500) return 74208 + (taxableIncome - 364200) * 0.32;
-            if (taxableIncome <= 693750) return 105664 + (taxableIncome - 462500) * 0.35;
-            return 186601.50 + (taxableIncome - 693750) * 0.37;
+            if (taxableIncome <= 11000) {
+                return taxableIncome * 0.10;
+            } //you are taxed the amount you make in each bracket actually, so the first 1,100 you are taxed .10, then excess $$ over that at .12 and on up...
+            if (taxableIncome <= 44725){ 
+                return 1100 + (taxableIncome - 11000) * 0.12;
+            }
+            if (taxableIncome <= 95375) { 
+                return 5147 + (taxableIncome - 44725) * 0.22;
+            }
+            if (taxableIncome <= 182100) {
+                return 16290 + (taxableIncome - 95375) * 0.24;}
+            if (taxableIncome <= 231250) {
+                return 37104 + (taxableIncome - 182100) * 0.32;}
+            if (taxableIncome <= 578125) {
+                return 52832 + (taxableIncome - 231250) * 0.35;
+                }
+            else{
+                return 174238.25 + (taxableIncome - 578125) * 0.37;
+            }
+        } 
+        else {                                          //tax brackets and taxable income for married joint filing
+            if (taxableIncome <= 22000) { 
+                return taxableIncome * 0.10;
+            }
+            if (taxableIncome <= 89450) {
+                return 2200 + (taxableIncome - 22000) * 0.12;
+            }
+            if (taxableIncome <= 190750) {
+                return 10294 + (taxableIncome - 89450) * 0.22;
+            }
+            if (taxableIncome <= 364200) {
+                return 32580 + (taxableIncome - 190750) * 0.24;
+            }
+            if (taxableIncome <= 462500) {
+                return 74208 + (taxableIncome - 364200) * 0.32;
+            }
+            if (taxableIncome <= 693750) {
+                return 105664 + (taxableIncome - 462500) * 0.35;
+            }
+            else{    
+                return 186601.50 + (taxableIncome - 693750) * 0.37;
+            }
         }
     }
     @AuraEnabled(cacheable=true)
@@ -52,9 +79,11 @@ public with sharing class JobApplicationTriggerHandlerHelper2 { //this is the co
 
         if(period == 'monthly') {
             return jobApp.Estimated_Monthly_Paycheck__c;
-        } else if(period == 'weekly') {
+        } 
+        else if(period == 'weekly') {
             return jobApp.Estimated_Weekly_Paycheck__c;
-        } else {
+        } 
+        else {
             return jobApp.Take_Home_Pay__c;
         }
     }
