@@ -45,19 +45,18 @@ public with sharing class JobAppTaskHelper {
             switch on job.Status__c {   //I like using the Subject for the task because sometimes I need to see everything there and not have to click again to read more
                 when 'Saved' {    //saved and applying are much likely to have several job applications entered at one time, so I gave them the plural version of configureTasks
                     List<Job_Application__c> singleJobList = new List<Job_Application__c>{ job };
-                    configureTasks(tasksToInsert, singleJobList, 'Check if the job description aligns with your interests and values', 1);
-                    configureTasks(tasksToInsert, singleJobList, 'Review the highlighted skills to see if the role is a good fit', 1);
-                    configureTasks(tasksToInsert, singleJobList, 'Research the company or role and mark your excitement level', 4);
+                    JobAppTaskHelper.configureTasks(tasksToInsert, singleJobList, 'Check if the job description aligns with your interests and values', 1);
+                    JobAppTaskHelper.configureTasks(tasksToInsert, singleJobList, 'Review the highlighted skills to see if the role is a good fit', 1);
+                    JobAppTaskHelper.configureTasks(tasksToInsert, singleJobList, 'Research the company or role and mark your excitement level', 4);
                 }
                 when 'Applying' {
                     List<Job_Application__c> singleJobList = new List<Job_Application__c>{ job };
-                    configureTasks(tasksToInsert, singleJobList, 'Find and research someone who works at the company and add them as a contact', 3);
-                    configureTasks(tasksToInsert, singleJobList, 'Set up an informational interview to learn more about the role/company', 3);
-                    configureTasks(tasksToInsert, singleJobList, 'Identify potential referrals to help get your application on the top of the pile', 1);
-                    configureTasks(tasksToInsert, singleJobList, 'Customize your work achievements using the job description keywords', 2);
-                    configureTasks(tasksToInsert, singleJobList, 'Submit your application on the company website if possible', 4);
+                    JobAppTaskHelper.configureTasks(tasksToInsert, singleJobList, 'Find and research someone who works at the company and add them as a contact', 3);
+                    JobAppTaskHelper.configureTasks(tasksToInsert, singleJobList, 'Set up an informational interview to learn more about the role/company', 3);
+                    JobAppTaskHelper.configureTasks(tasksToInsert, singleJobList, 'Identify potential referrals to help get your application on the top of the pile', 1);
+                    JobAppTaskHelper.configureTasks(tasksToInsert, singleJobList, 'Customize your work achievements using the job description keywords', 2);
+                    JobAppTaskHelper.configureTasks(tasksToInsert, singleJobList, 'Submit your application on the company website if possible', 4);
                 }
-                
                 when 'Applied' {
                     List<Job_Application__c> singleJobList = new List<Job_Application__c>{ job };
                     JobAppTaskHelper.configureTask(tasksToInsert, jobId, jobOwnerId,'Reach out to the hiring manager or recruiter', 3);
