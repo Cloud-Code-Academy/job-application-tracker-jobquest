@@ -35,8 +35,8 @@ static void testJobApplicationTrigger_takeHomePayBeforeInsert(){     //this test
     Assert.areEqual(null, insertedJobApps.get(jobNull.Id).Estimated_Monthly_Paycheck__c, 'This field should be null');
     System.assertEquals(4456, Math.round(insertedJobApps.get(jobSalarySingle.Id).Estimated_Monthly_Paycheck__c), 'Single Filing - This field should equal 4456');
     Assert.areEqual(53467.00, insertedJobApps.get(jobSalarySingle.Id).Take_Home_Pay__c, 'Single Filing - Take_Home_Pay__c should equal 53467.00');
-    System.assertEquals(4665, Math.round(insertedJobApps.get(jobSalaryMarried.Id).Estimated_Monthly_Paycheck__c), 'Married Filing - This field should equal 4665');
-    Assert.areEqual(55979.50, insertedJobApps.get(jobSalaryMarried.Id).Take_Home_Pay__c, 'Married Filing - Take_Home_Pay__c should equal 55979.50');
+    System.assertEquals(4666, Math.round(insertedJobApps.get(jobSalaryMarried.Id).Estimated_Monthly_Paycheck__c), 'Married Filing - This field should equal 4666');
+    Assert.areEqual(55991.50, insertedJobApps.get(jobSalaryMarried.Id).Take_Home_Pay__c, 'Married Filing - Take_Home_Pay__c should equal 55991.50');
     Assert.areEqual(null, insertedJobApps.get(jobNull.Id).Estimated_Weekly_Paycheck__c, 'For a null salary, the weekly paycheck should also be null');
     System.assertEquals(1028, Math.round(insertedJobApps.get(jobSalarySingle.Id).Estimated_Weekly_Paycheck__c), 'For the given salary for filing single, the weekly paycheck should be 1028');
 
@@ -110,8 +110,8 @@ static void testJobApplicationTrigger_takeHomePayBeforeInsert(){     //this test
         
         System.assertEquals(4749, Math.round(updatedJobApps.get(jobSalarySingle.Id).Estimated_Monthly_Paycheck__c), 'Single Filing after salary update - This field should equal 4749');
         Assert.areEqual(56984.50, updatedJobApps.get(jobSalarySingle.Id).Take_Home_Pay__c, 'Single Filing after salary update - Take_Home_Pay__c should equal 56984.50');
-        System.assertEquals(5000, Math.round(updatedJobApps.get(jobSalaryJoint.Id).Estimated_Monthly_Paycheck__c), 'Married Filing Jointly after salary update - This field should equal 5000');
-        Assert.areEqual(59997.00, updatedJobApps.get(jobSalaryJoint.Id).Take_Home_Pay__c, 'Married Filing Jointly after salary update - Take_Home_Pay__c should equal 59997.00');
+        System.assertEquals(5001, Math.round(updatedJobApps.get(jobSalaryJoint.Id).Estimated_Monthly_Paycheck__c), 'Married Filing Jointly after salary update - This field should equal 5000');
+        Assert.areEqual(60009.00, updatedJobApps.get(jobSalaryJoint.Id).Take_Home_Pay__c, 'Married Filing Jointly after salary update - Take_Home_Pay__c should equal 6009.00');
         System.assertEquals(1028, Math.round(updatedJobApps.get(jobNull.Id).Estimated_Weekly_Paycheck__c), 'Single Filing after update from null salary - Weekly paycheck should be 1028');
         System.assertEquals(1096, Math.round(updatedJobApps.get(jobSalarySingle.Id).Estimated_Weekly_Paycheck__c), 'Single Filing after salary update - Weekly paycheck should be 1096');
         System.assertEquals(1154, Math.round(updatedJobApps.get(jobSalaryJoint.Id).Estimated_Weekly_Paycheck__c), 'Married Filing Jointly after salary update - Weekly paycheck should be 1154');

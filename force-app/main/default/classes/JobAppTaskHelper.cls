@@ -1,7 +1,7 @@
 //This is a number of helper methods
-// collection of applications, note s on configureTasks
+// collection of applications, note s on configureTasks, the earlier tasks use the plural method because it is more likely many applications could be given at once at these status levels
 public with sharing class JobAppTaskHelper {
-    public static void configureTasks(List<Task> tasksToInsert, List<Job_Application__c> jobApplications, String taskSubject, Integer daysToAdd) {
+    public static void configureTasks(List<Task> tasksToInsert, List<Job_Application__c> jobApplications, String taskSubject, Integer daysToAdd) {     
         for(Job_Application__c jobApp : jobApplications) {
             Task newTask = new Task(); 
             newTask.WhatId = jobApp.Id;
@@ -14,8 +14,8 @@ public with sharing class JobAppTaskHelper {
         }
     }
 
-   // single job application 
-    public static void configureTask(List<Task> tasksToInsert, Id jobId, Id jobOwnerId, String taskSubject, Integer daysToAdd) {
+   // single job application (no s)
+    public static void configureTask(List<Task> tasksToInsert, Id jobId, Id jobOwnerId, String taskSubject, Integer daysToAdd) {     
         Task newTask = new Task();
         newTask.WhatId = jobId;
         newTask.ActivityDate = Date.Today().addDays(daysToAdd);
@@ -36,18 +36,18 @@ public with sharing class JobAppTaskHelper {
         return tasksToInsert;
     }
     
-    public static void taskDetails(List<Job_Application__c> jobs, List<Task> tasksToInsert) {  //for inserting
+    public static void taskDetails(List<Job_Application__c> jobs, List<Task> tasksToInsert) {  //for inserting 
         for(Job_Application__c job : jobs) {
             Id jobId = job.Id;
             Id jobOwnerId = job.OwnerId;
             List<Job_Application__c> jobList = new List<Job_Application__c>{ job }; // Creating a list for a single job
             
             switch on job.Status__c {   //I like using the Subject for the task because sometimes I need to see everything there and not have to click again to read more
-                when 'Saved' {
+                when 'Saved' {    //saved and applying are much likely to have several job applications entered at one time, so I gave them the plural version of configureTasks
                     List<Job_Application__c> singleJobList = new List<Job_Application__c>{ job };
-                    configureTasks(tasksToInsert, jobList, 'Check if the job description aligns with your interests and values', 1);
-                    configureTasks(tasksToInsert, jobList, 'Review the highlighted skills to see if the role is a good fit', 1);
-                    configureTasks(tasksToInsert, jobList, 'Research the company or role and mark your excitement level', 4);
+                    configureTasks(tasksToInsert, singleJobList, 'Check if the job description aligns with your interests and values', 1);
+                    configureTasks(tasksToInsert, singleJobList, 'Review the highlighted skills to see if the role is a good fit', 1);
+                    configureTasks(tasksToInsert, singleJobList, 'Research the company or role and mark your excitement level', 4);
                 }
                 when 'Applying' {
                     List<Job_Application__c> singleJobList = new List<Job_Application__c>{ job };
@@ -60,10 +60,10 @@ public with sharing class JobAppTaskHelper {
                 
                 when 'Applied' {
                     List<Job_Application__c> singleJobList = new List<Job_Application__c>{ job };
-                    configureTask(tasksToInsert, jobId, jobOwnerId,'Reach out to the hiring manager or recruiter', 3);
-                    configureTask(tasksToInsert, jobId, jobOwnerId,'Follow up on your application via email weekly', 7);
-                    configureTask(tasksToInsert, jobId, jobOwnerId,'Continue identifying and saving similar job opportunities', 7);
-                    configureTask(tasksToInsert, jobId, jobOwnerId,'Set up weekly networking calls to explore similar companies/roles', 7); 
+                    JobAppTaskHelper.configureTask(tasksToInsert, jobId, jobOwnerId,'Reach out to the hiring manager or recruiter', 3);
+                    JobAppTaskHelper.configureTask(tasksToInsert, jobId, jobOwnerId,'Follow up on your application via email weekly', 7);
+                    JobAppTaskHelper.configureTask(tasksToInsert, jobId, jobOwnerId,'Continue identifying and saving similar job opportunities', 7);
+                    JobAppTaskHelper.configureTask(tasksToInsert, jobId, jobOwnerId,'Set up weekly networking calls to explore similar companies/roles', 7); 
                 }
                 when 'Interviewing' {
                     List<Job_Application__c> singleJobList = new List<Job_Application__c>{ job };
