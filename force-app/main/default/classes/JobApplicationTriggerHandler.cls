@@ -60,7 +60,9 @@ public class JobApplicationTriggerHandler extends TriggerHandler {
     }
     }
 public override void afterInsert() {
-    if (isTriggerRunning) return;  //this means if the trigger is already running (set to true) it will exit this method
+    if (isTriggerRunning) {
+        return;
+    }  //this means if the trigger is already running (set to true) it will exit this method
 
     isTriggerRunning = true; //if not already running, set to true
     try {
@@ -76,9 +78,10 @@ public override void afterInsert() {
 }
 
 public override void afterUpdate() {
-    if (isTriggerRunning) return;  //exit if already running
-
-    isTriggerRunning = true; 
+    if (isTriggerRunning) { 
+        return;  //exit if already running
+    }
+    isTriggerRunning = true; //if false, set it to true
     try {
         List<Task> tasksToInsert = new List<Task>();
         Map<Id, Job_Application__c> statusChangedMap = getStatusChangedJobs();  //this method is described below 
@@ -93,7 +96,7 @@ public override void afterUpdate() {
         GeneralEmailClassForExceptions.sendExceptionEmailtest('Error in Job Application Trigger Handler:', except);  
     } 
     finally {
-        isTriggerRunning = false;  //trigger is reset
+        isTriggerRunning = false;  //trigger is reset to false
     }
 }
 
