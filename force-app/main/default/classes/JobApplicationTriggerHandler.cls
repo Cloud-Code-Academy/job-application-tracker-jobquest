@@ -59,25 +59,25 @@ public class JobApplicationTriggerHandler extends TriggerHandler {
         }
     }
     }
-public override void afterInsert() {
-    if (isTriggerRunning) {
-        return;
-    }  //this means if the trigger is already running (set to true) it will exit this method
+    public override void afterInsert() {
+        if (isTriggerRunning) {
+            return;
+        }  //this means if the trigger is already running (set to true) it will exit this method
 
-    isTriggerRunning = true; //if not already running, set to true
-    try {
-        List<Task> tasksToInsert = JobAppTaskHelper.handleInsertedJobs(this.newJobMap, new List<Task>());
-            insert tasksToInsert;
-    } 
-    catch (Exception except) {
-        GeneralEmailClassForExceptions.sendExceptionEmailtest('Error in Job Application Trigger Handler:', except);
-    } 
-    finally {
-        isTriggerRunning = false;  //no matter what, ifTriggerRunning will be set to false at this point
+        isTriggerRunning = true; //if not already running, set to true
+        try {
+            List<Task> tasksToInsert = JobAppTaskHelper.handleInsertedJobs(this.newJobMap, new List<Task>());
+                insert tasksToInsert;
+        } 
+        catch (Exception except) {
+            GeneralEmailClassForExceptions.sendExceptionEmailtest('Error in Job Application Trigger Handler:', except);
+        } 
+        finally {
+            isTriggerRunning = false;  //no matter what, ifTriggerRunning will be set to false at this point
+        }
     }
-}
 
-public override void afterUpdate() {
+    public override void afterUpdate() {
     if (isTriggerRunning) { 
         return;  //exit if already running
     }
@@ -98,9 +98,8 @@ public override void afterUpdate() {
     finally {
         isTriggerRunning = false;  //trigger is reset to false
     }
-}
-
-private Map<Id, Job_Application__c> getStatusChangedJobs() {
+    }
+    private Map<Id, Job_Application__c> getStatusChangedJobs() {
     Map<Id, Job_Application__c> statusChangedMap = new Map<Id, Job_Application__c>();
     for (Job_Application__c job : this.newJobList) {
         Job_Application__c oldJob = this.oldJobMap.get(job.Id);  //this.oldJobMap corresponds to trigger.oldMap
@@ -109,5 +108,5 @@ private Map<Id, Job_Application__c> getStatusChangedJobs() {
         }
     }
     return statusChangedMap;
-}
+    }
 }

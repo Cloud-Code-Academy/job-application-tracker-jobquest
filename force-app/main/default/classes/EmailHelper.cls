@@ -64,9 +64,9 @@ public class EmailHelper {
             }
         }
     }
-    else {
-        System.debug('No Salesforce Administrator found.');
-    }
+        else {
+            System.debug('No Salesforce Administrator found.');
+        }
     }
 
     public class EmailException extends Exception {}
