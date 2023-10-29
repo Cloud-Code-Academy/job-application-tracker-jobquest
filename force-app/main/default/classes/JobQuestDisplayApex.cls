@@ -7,6 +7,5 @@ public with sharing class JobQuestDisplayApex {
     @AuraEnabled
     public static void deleteJobApplication(String jobId) {   //this deletes Job Applications that have the same Jooble Id.
     delete new Job_Application__c(Id = jobId);
-}
-
+    }
 }
