@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customObject>true</customObject>
+    <description>This pencil tab is for the Job Application icon until such a time as a custom image is created.</description>
+    <motif>Custom83: Pencil</motif>
+</CustomTab>

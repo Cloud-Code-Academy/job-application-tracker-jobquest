@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Name_or_Names_of_Interviewer__c</fullName>
+    <description>Field for the name of the interviewer.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>List interviewer or interviewers by name.</inlineHelpText>
+    <label>Name or Names of Interviewer</label>
+    <length>100</length>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

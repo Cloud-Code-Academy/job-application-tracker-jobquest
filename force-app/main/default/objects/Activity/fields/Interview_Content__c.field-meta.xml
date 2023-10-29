@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Interview_Content__c</fullName>
+    <description>Knowing what topics will be covered helps the user to prepare for the interview.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Select one that best fits the content of the interview.  General Interviews are &quot;get to know you.&quot; Technical are asking technical questions. Case interviews are common for consulting roles. In a case interview, the interviewer usually presents a scenario or problem—the “case”—and asks specific questions on how you would address its challenge(s).</inlineHelpText>
+    <label>Interview Content Type</label>
+    <required>false</required>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>General</fullName>
+                <default>false</default>
+                <label>General</label>
+            </value>
+            <value>
+                <fullName>Technical</fullName>
+                <default>false</default>
+                <label>Technical</label>
+            </value>
+            <value>
+                <fullName>Case</fullName>
+                <default>false</default>
+                <label>Case</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
