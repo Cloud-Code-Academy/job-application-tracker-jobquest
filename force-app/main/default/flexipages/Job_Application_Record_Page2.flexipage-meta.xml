@@ -284,8 +284,8 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
-                <componentName>JobQuest_Paycheck_Calculator</componentName>
-                <identifier>c_JobQuest_Paycheck_Calculator</identifier>
+                <componentName>jobQuest_Paycheck_Calculator</componentName>
+                <identifier>c_jobQuest_Paycheck_Calculator</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>

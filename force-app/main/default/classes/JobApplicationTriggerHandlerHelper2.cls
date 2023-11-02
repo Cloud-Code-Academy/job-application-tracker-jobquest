@@ -70,7 +70,7 @@ public with sharing class JobApplicationTriggerHandlerHelper2 { //this is the co
         }
     }
     @AuraEnabled(cacheable=true)   //this part is for the lwc (JobQuest Calculator2)
-    public static Decimal calculateTakeHomePay(Decimal salary, String filingStatus, String period) {   //calculateTakeHomePay method defined here is utilized by JobQuest_Paycheck_Calculator.js for the LWC  as well as the record fields on the Job Application object
+    public static Decimal calculateTakeHomePay(Decimal salary, String filingStatus, String period) {   //calculateTakeHomePay method defined here is utilized by jobQuest_Paycheck_Calculator.js for the LWC  as well as the record fields on the Job Application object
         Job_Application__c jobApp = new Job_Application__c();
         jobApp.Salary__c = salary;
 
