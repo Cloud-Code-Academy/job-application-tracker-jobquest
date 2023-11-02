@@ -1,6 +1,6 @@
 @isTest
 private class GeneralEmailClassForExceptions_Test {
-//I tested so much I ran into my limit for emails, so I was unable to test this properly, therefore I commented out the code that used it and used system.debug until I can properly test more
+
     @isTest static void testSendExceptionEmail() {
         Test.startTest();
 
