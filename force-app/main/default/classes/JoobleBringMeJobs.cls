@@ -5,8 +5,6 @@ public class JoobleBringMeJobs implements Schedulable { //JoobleBringMeJobs take
         adminEmail = adminUser.Email;
     }  
     public static void fetchJobs() { //this will be scheduled but it can run at any time with apex anonymous or hello.apex by typing: JoobleBringMeJobs.fetchJobs(); 
-        
-        //String endpoint = 'https://jooble.org/api/841aea51-b780-4bbb-ac8b-da65f2065d7f';
         String bodyContent = '{ keywords: "Junior Salesforce Developer", location: "Remote" }';  //these keyword categories are given by Jooble to search the jobs, and refer to Job Title and Location and the stuff in double quotes can be changed ie remote can be changed to Anchorage, Alaska
         HttpRequest request = new HttpRequest();
         request.setEndpoint('callout:JoobleAPI');
